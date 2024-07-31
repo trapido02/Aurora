@@ -1,3 +1,4 @@
+#include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
 #include <iostream>
@@ -22,10 +23,16 @@ int main()
 
     glfwMakeContextCurrent(window);
 
+    // Load glad
+    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+    {
+        return -1;
+    }
+
     while (!glfwWindowShouldClose(window))
     {
-        glClear(GL_COLOR_BUFFER_BIT);
         glClearColor(0.1f, 0.3f, 0.2f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
 
         // Render here
 
