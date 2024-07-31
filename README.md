@@ -1,0 +1,2 @@
+# Aurora
+An OpenGL project
