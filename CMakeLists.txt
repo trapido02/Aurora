@@ -10,7 +10,12 @@ add_executable(
 	${PROJECT_NAME}
 	"vendor/glad/src/glad.c"
 	"source/Main.cpp"
+
 	"source/core/Window.cpp"
+	"source/core/Window.h"
+
+	"source/core/Game.cpp"
+	"source/core/Game.h"
 )
 
 # Setup library directories
