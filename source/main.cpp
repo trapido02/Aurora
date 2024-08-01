@@ -1,45 +1,19 @@
-#include <glad/glad.h>
-#include <GLFW/glfw3.h>
+#include "core/Window.h"
 
 #include <iostream>
 
 int main()
 {
-    GLFWwindow* window;
+    Core::Window* window = new Core::Window("Aurora", 720 * 16 / 9, 720);
+    window->SetVsync(true);
 
-    if (!glfwInit())
-        return -1;
-
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 4);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-
-    window = glfwCreateWindow(720*16/9, 720, "Aurora", NULL, NULL);
-    if (!window)
-    {
-        glfwTerminate();
-        return -1;
-    }
-
-    glfwMakeContextCurrent(window);
-
-    // Load glad
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        return -1;
-    }
-
-    while (!glfwWindowShouldClose(window))
+    while (true)
     {
         glClearColor(0.1f, 0.3f, 0.2f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        // Render here
-
-        glfwSwapBuffers(window);
-        glfwPollEvents();
+        window->OnUpdate();
     }
 
-    glfwTerminate();
     return 0;
 }
