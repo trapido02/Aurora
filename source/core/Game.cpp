@@ -14,8 +14,8 @@ namespace Core {
 	{
 		while (m_IsRunning)
 		{
-			glClearColor(0.1f, 0.3f, 0.2f, 1.0f);
-			glClear(GL_COLOR_BUFFER_BIT);
+			m_Renderer.Clear();
+			m_Renderer.ClearColor(0.1f, 0.3f, 0.2f, 1.0f);
 
 			m_Window->OnUpdate();
 		}

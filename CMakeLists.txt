@@ -16,6 +16,9 @@ add_executable(
 
 	"source/core/Game.cpp"
 	"source/core/Game.h"
+
+	"source/renderer/Renderer.cpp"
+	"source/renderer/Renderer.h"
 )
 
 # Setup library directories
@@ -23,8 +26,9 @@ target_link_directories(${PROJECT_NAME} PRIVATE vendor/glfw/lib-vc2022)
 
 # Setup include directories
 target_include_directories(
-	${PROJECT_NAME} 
+	${PROJECT_NAME}
 	PRIVATE 
+	source
 	vendor/glfw/include
 	vendor/glad/include
 )

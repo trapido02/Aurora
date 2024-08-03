@@ -1,5 +1,6 @@
 #pragma once
 
+#include "renderer/Renderer.h"
 #include "Window.h"
 
 namespace Core {
@@ -23,6 +24,7 @@ namespace Core {
 
 		Window* m_Window = nullptr;
 		bool m_IsRunning = true;
+		Renderer::Renderer m_Renderer;
 	};
 
 }

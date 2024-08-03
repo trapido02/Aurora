@@ -21,7 +21,7 @@ namespace Core {
         glfwMakeContextCurrent(m_Window);
         glfwSwapInterval(m_Vsync);
 
-        // Load glad
+        // Load glad, should maybe be removed since this window class should ONLY handle the window, and not glad really.
         gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
     }
 
