@@ -30,25 +30,7 @@ namespace Core {
 
 	void Game::Run()
 	{
-		// Compile shaders
-		unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
-		unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-
-		glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
-		glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
-
-		glCompileShader(vertexShader);
-		glCompileShader(fragmentShader);
-
-		// Link shaders
-		unsigned int shaderProgram = glCreateProgram();
-		glAttachShader(shaderProgram, vertexShader);
-		glAttachShader(shaderProgram, fragmentShader);
-		glLinkProgram(shaderProgram);
-
-		// Delete shaders after they are linked to the shader program
-		glDeleteShader(vertexShader);
-		glDeleteShader(fragmentShader);
+		m_Shader = new Renderer::Shader(vertexShaderSource, fragmentShaderSource);
 
 		// Setup vertices
 		float vertices[] = {
@@ -78,7 +60,7 @@ namespace Core {
 			m_Renderer.Clear();
 			m_Renderer.ClearColor(0.1f, 0.3f, 0.2f, 1.0f);
 
-			glUseProgram(shaderProgram);
+			m_Shader->Bind();
 			glBindVertexArray(VAO);
 			glDrawArrays(GL_TRIANGLES, 0, 3);
 

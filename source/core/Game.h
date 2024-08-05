@@ -1,7 +1,10 @@
 #pragma once
 
+#include "renderer/Shader.h"
 #include "renderer/Renderer.h"
 #include "Window.h"
+
+#include <memory>
 
 namespace Core {
 	
@@ -25,6 +28,7 @@ namespace Core {
 		Window* m_Window = nullptr;
 		bool m_IsRunning = true;
 		Renderer::Renderer m_Renderer;
+		Renderer::Shader* m_Shader = nullptr;
 	};
 
 }
