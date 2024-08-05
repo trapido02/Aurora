@@ -2,6 +2,14 @@
 
 namespace Renderer {
 
+	class VertexBufferLayout
+	{
+	public:
+		VertexBufferLayout(float count)
+			: m_Count(count) {}
+		float m_Count;
+	};
+
 	class VertexBuffer
 	{
 	public:

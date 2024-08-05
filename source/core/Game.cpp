@@ -32,9 +32,13 @@ namespace Core {
 	{
 		// Setup vertices
 		float vertices[] = {
-			-0.5f, -0.5f, 0.0f,
-			 0.5f, -0.5f, 0.0f,
-			 0.0f, 0.5f, 0.0f
+			 0.5f,  0.5f, 0.0f, // top right
+			 0.5f, -0.5f, 0.0f, // bottom right
+			-0.5f,  0.5f, 0.0f, // top left 
+
+			-0.5f, -0.5f, 0.0f, // bottom left
+			-0.5f,  0.5f, 0.0f, // top left 
+			 0.5f, -0.5f, 0.0f  // bottom right
 		};
 
 		// Create the Shader, VBO and VAO
@@ -45,8 +49,8 @@ namespace Core {
 		m_VertexArray->Bind();
 		m_VertexBuffer->Bind();
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
+		Renderer::VertexBufferLayout layout(3);
+		m_VertexArray->AttachBuffer(*m_VertexBuffer, layout);
 
 		m_VertexBuffer->Unbind();
 		m_VertexArray->Unbind();
@@ -58,7 +62,7 @@ namespace Core {
 
 			m_Shader->Bind();
 			m_VertexArray->Bind();
-			glDrawArrays(GL_TRIANGLES, 0, 3);
+			glDrawArrays(GL_TRIANGLES, 0, 6);
 
 			m_Window->OnUpdate();
 		}

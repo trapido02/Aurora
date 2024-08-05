@@ -1,5 +1,7 @@
 #pragma once
 
+#include "VertexBuffer.h"
+
 namespace Renderer {
 
 	class VertexArray
@@ -7,6 +9,8 @@ namespace Renderer {
 	public:
 		VertexArray();
 		~VertexArray();
+
+		void AttachBuffer(VertexBuffer& vertexBuffer, VertexBufferLayout& layout);
 
 		void Bind();
 		void Unbind();
