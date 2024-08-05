@@ -2,6 +2,7 @@
 
 #include "renderer/Shader.h"
 #include "renderer/Renderer.h"
+#include "renderer/VertexArray.h"
 #include "Window.h"
 
 #include <memory>
@@ -27,8 +28,10 @@ namespace Core {
 
 		Window* m_Window = nullptr;
 		bool m_IsRunning = true;
-		Renderer::Renderer* m_Renderer;
+
+		Renderer::Renderer* m_Renderer = nullptr;
 		Renderer::Shader* m_Shader = nullptr;
+		Renderer::VertexArray* m_VertexArray = nullptr;
 	};
 
 }
