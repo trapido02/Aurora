@@ -57,8 +57,8 @@ namespace Core {
 
 		while (m_IsRunning)
 		{
-			m_Renderer.Clear();
-			m_Renderer.ClearColor(0.1f, 0.3f, 0.2f, 1.0f);
+			m_Renderer->Clear();
+			m_Renderer->ClearColor(0.1f, 0.3f, 0.2f, 1.0f);
 
 			m_Shader->Bind();
 			glBindVertexArray(VAO);
