@@ -4,6 +4,7 @@
 #include "renderer/Renderer.h"
 #include "renderer/VertexArray.h"
 #include "renderer/VertexBuffer.h"
+#include "renderer/IndexBuffer.h"
 #include "Window.h"
 
 #include <memory>
@@ -34,6 +35,7 @@ namespace Core {
 		Renderer::Shader* m_Shader = nullptr;
 		Renderer::VertexArray* m_VertexArray = nullptr;
 		Renderer::VertexBuffer* m_VertexBuffer = nullptr;
+		Renderer::IndexBuffer* m_IndexBuffer = nullptr;
 	};
 
 }

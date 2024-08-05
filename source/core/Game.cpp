@@ -32,16 +32,18 @@ namespace Core {
 	{
 		// Setup vertices
 		float vertices[] = {
-			 0.5f,  0.5f, 0.0f, // top right
-			 0.5f, -0.5f, 0.0f, // bottom right
-			-0.5f,  0.5f, 0.0f, // top left 
-
-			-0.5f, -0.5f, 0.0f, // bottom left
-			-0.5f,  0.5f, 0.0f, // top left 
-			 0.5f, -0.5f, 0.0f  // bottom right
+			 0.5f,  0.5f, 0.0f,  // top right
+			 0.5f, -0.5f, 0.0f,  // bottom right
+			-0.5f, -0.5f, 0.0f,  // bottom left
+			-0.5f,  0.5f, 0.0f   // top left 
 		};
 
-		// Create the Shader, VBO and VAO
+		unsigned int indices[] = {
+			0, 1, 3,  // first Triangle
+			1, 2, 3   // second Triangle
+		};
+
+		// Create the Shader, VBO, EBO and VAO
 		m_Shader = new Renderer::Shader(vertexShaderSource, fragmentShaderSource);
 		m_VertexArray = new Renderer::VertexArray;
 		m_VertexBuffer = new Renderer::VertexBuffer(sizeof(vertices), vertices, GL_STATIC_DRAW);
@@ -51,6 +53,7 @@ namespace Core {
 
 		Renderer::VertexBufferLayout layout(3);
 		m_VertexArray->AttachBuffer(*m_VertexBuffer, layout);
+		m_IndexBuffer = new Renderer::IndexBuffer(indices, 12);
 
 		m_VertexBuffer->Unbind();
 		m_VertexArray->Unbind();
@@ -62,7 +65,8 @@ namespace Core {
 
 			m_Shader->Bind();
 			m_VertexArray->Bind();
-			glDrawArrays(GL_TRIANGLES, 0, 6);
+			//glDrawArrays(GL_TRIANGLES, 0, 6);
+			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 			m_Window->OnUpdate();
 		}
@@ -72,6 +76,11 @@ namespace Core {
 	{
 		m_IsRunning = false;
 		delete m_Window;
+		delete m_Renderer;
+		delete m_Shader;
+		delete m_VertexArray;
+		delete m_VertexBuffer;
+		delete m_IndexBuffer;
 	}
 
 }
