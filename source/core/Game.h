@@ -3,6 +3,7 @@
 #include "renderer/Shader.h"
 #include "renderer/Renderer.h"
 #include "renderer/VertexArray.h"
+#include "renderer/VertexBuffer.h"
 #include "Window.h"
 
 #include <memory>
@@ -32,6 +33,7 @@ namespace Core {
 		Renderer::Renderer* m_Renderer = nullptr;
 		Renderer::Shader* m_Shader = nullptr;
 		Renderer::VertexArray* m_VertexArray = nullptr;
+		Renderer::VertexBuffer* m_VertexBuffer = nullptr;
 	};
 
 }

@@ -30,9 +30,6 @@ namespace Core {
 
 	void Game::Run()
 	{
-		m_Shader = new Renderer::Shader(vertexShaderSource, fragmentShaderSource);
-		m_VertexArray = new Renderer::VertexArray;
-
 		// Setup vertices
 		float vertices[] = {
 			-0.5f, -0.5f, 0.0f,
@@ -40,20 +37,19 @@ namespace Core {
 			 0.0f, 0.5f, 0.0f
 		};
 
-		// Create the VBO and VAO
-		unsigned int VBO;
-		glGenBuffers(1, &VBO);
+		// Create the Shader, VBO and VAO
+		m_Shader = new Renderer::Shader(vertexShaderSource, fragmentShaderSource);
+		m_VertexArray = new Renderer::VertexArray;
+		m_VertexBuffer = new Renderer::VertexBuffer(sizeof(vertices), vertices, GL_STATIC_DRAW);
 
 		m_VertexArray->Bind();
-		glBindBuffer(GL_ARRAY_BUFFER, VBO);
-
-		glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+		m_VertexBuffer->Bind();
 
 		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 		glEnableVertexAttribArray(0);
 
+		m_VertexBuffer->Unbind();
 		m_VertexArray->Unbind();
-		glBindVertexArray(0);
 
 		while (m_IsRunning)
 		{
