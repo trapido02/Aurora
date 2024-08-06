@@ -6,21 +6,24 @@
 const char* vertexShaderSource = R"(
 #version 450 core
 layout (location = 0) in vec3 aPos;
+layout (location = 1) in vec3 aColor;
+
+out vec3 ourColor;
+
 void main()
 {
 	gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
+	ourColor = aColor;
 }
 )";
 const char* fragmentShaderSource = R"(
 #version 450 core
 out vec4 FragColor;
-
-uniform vec4 ourColor;
+in vec3 ourColor;
 
 void main()
 {
-	FragColor = ourColor;
-	//FragColor = vec4(0.6f, 0.4f, 1.0f, 1.0f);
+	FragColor = vec4(ourColor, 1.0f);
 }
 )";
 
@@ -35,16 +38,12 @@ namespace Core {
 	void Game::Run()
 	{
 		// Setup vertices
-		float vertices[] = {
-			 0.5f,  0.5f, 0.0f,  // top right
-			 0.5f, -0.5f, 0.0f,  // bottom right
-			-0.5f, -0.5f, 0.0f,  // bottom left
-			-0.5f,  0.5f, 0.0f   // top left 
-		};
 
-		unsigned int indices[] = {
-			0, 1, 3,  // first Triangle
-			1, 2, 3   // second Triangle
+		float vertices[] = {
+			// positions		 // colors
+			 0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f, // bottom right
+			-0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f, // bottom left
+			 0.0f,  0.5f, 0.0f,  0.0f, 0.0f, 1.0f // top
 		};
 
 		// Create the Shader, VBO, EBO and VAO
@@ -55,9 +54,10 @@ namespace Core {
 		m_VertexArray->Bind();
 		m_VertexBuffer->Bind();
 
-		Renderer::VertexBufferLayout layout(3);
+		Renderer::VertexBufferLayout layout;
+		layout.Push<float>(3);
+		layout.Push<float>(3);
 		m_VertexArray->AttachBuffer(*m_VertexBuffer, layout);
-		m_IndexBuffer = new Renderer::IndexBuffer(indices, 12);
 
 		m_VertexBuffer->Unbind();
 		m_VertexArray->Unbind();
@@ -70,11 +70,7 @@ namespace Core {
 			m_Shader->Bind();
 			m_VertexArray->Bind();
 
-			float color = sin(glfwGetTime()) / 2.0f + 0.5f;
-			m_Shader->SetUniform4f("ourColor", color, color, 0.0f, 1.0f);
-
-			//glDrawArrays(GL_TRIANGLES, 0, 6);
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			glDrawArrays(GL_TRIANGLES, 0, 6);
 
 			m_Window->OnUpdate();
 		}
@@ -88,7 +84,6 @@ namespace Core {
 		delete m_Shader;
 		delete m_VertexArray;
 		delete m_VertexBuffer;
-		delete m_IndexBuffer;
 	}
 
 }

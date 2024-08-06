@@ -2,6 +2,8 @@
 
 #include "VertexArray.h"
 
+#include <iostream>
+
 namespace Renderer {
 
 	VertexArray::VertexArray()
@@ -18,8 +20,15 @@ namespace Renderer {
 	{
 		Bind();
 		vertexBuffer.Bind();
-		glVertexAttribPointer(0, layout.m_Count, GL_FLOAT, GL_FALSE, layout.m_Count * sizeof(float), (void*)0);
-		glEnableVertexAttribArray(0);
+		const auto& elements = layout.GetElements();
+		unsigned int offset = 0;
+		for (unsigned int i = 0; i < elements.size(); i++)
+		{
+			const auto& element = elements[i];
+			glVertexAttribPointer(i, element.count, element.type, element.normalized, layout.GetStride(), (void*)offset);
+			glEnableVertexAttribArray(i);
+			offset += element.count * sizeof(element.type);
+		}
 	}
 
 	void VertexArray::Bind()

@@ -35,7 +35,6 @@ namespace Core {
 		Renderer::Shader* m_Shader = nullptr;
 		Renderer::VertexArray* m_VertexArray = nullptr;
 		Renderer::VertexBuffer* m_VertexBuffer = nullptr;
-		Renderer::IndexBuffer* m_IndexBuffer = nullptr;
 	};
 
 }
