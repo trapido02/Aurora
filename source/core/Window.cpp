@@ -1,5 +1,6 @@
 #include <glad/glad.h>
 #include "Window.h"
+#include "Game.h"
 
 namespace Core {
 
@@ -23,6 +24,14 @@ namespace Core {
 
         // Load glad, should maybe be removed since this window class should ONLY handle the window, and not glad really.
         gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
+
+        glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) {
+            Game::getInstance().Shutdown();
+        });
+
+        glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
+            glViewport(0, 0, width, height);
+        });
     }
 
     Window::~Window()
