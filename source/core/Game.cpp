@@ -14,9 +14,13 @@ void main()
 const char* fragmentShaderSource = R"(
 #version 450 core
 out vec4 FragColor;
+
+uniform vec4 ourColor;
+
 void main()
 {
-	FragColor = vec4(0.6f, 0.4f, 1.0f, 1.0f);
+	FragColor = ourColor;
+	//FragColor = vec4(0.6f, 0.4f, 1.0f, 1.0f);
 }
 )";
 
@@ -65,6 +69,10 @@ namespace Core {
 
 			m_Shader->Bind();
 			m_VertexArray->Bind();
+
+			float color = sin(glfwGetTime()) / 2.0f + 0.5f;
+			m_Shader->SetUniform4f("ourColor", color, color, 0.0f, 1.0f);
+
 			//glDrawArrays(GL_TRIANGLES, 0, 6);
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 

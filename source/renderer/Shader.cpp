@@ -40,4 +40,10 @@ namespace Renderer {
 		glUseProgram(0);
 	}
 
+	void Shader::SetUniform4f(GLchar* name, float v1, float v2, float v3, float v4)
+	{
+		int uniformLocation = glGetUniformLocation(m_ShaderProgram, name);
+		glUniform4f(uniformLocation, v1, v2, v3, v4);
+	}
+
 }
