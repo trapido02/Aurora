@@ -1,5 +1,7 @@
 #include "Shader.h"
 
+#include <iostream>
+
 namespace Renderer {
 
 	Shader::Shader(const char* vertexShaderSource, const char* fragmentShaderSource)
@@ -13,6 +15,28 @@ namespace Renderer {
 
 		glCompileShader(vertexShader);
 		glCompileShader(fragmentShader);
+
+		// Check for compilation errors
+		int vertexSuccess;
+		int fragmentSuccess;
+		glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &vertexSuccess);
+		glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &fragmentSuccess);
+		if (!vertexSuccess)
+		{
+			int length;
+			glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &length);
+			char* message = (char*)_malloca(length * sizeof(char));
+			glGetShaderInfoLog(vertexShader, length, &length, message);
+			std::cerr << "VERTEX_SHADER_COMPILATION_ERROR:\n" << message << std::endl;
+		}
+		if (!fragmentSuccess)
+		{
+			int length;
+			glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &length);
+			char* message = (char*)_malloca(length * sizeof(char));
+			glGetShaderInfoLog(fragmentShader, length, &length, message);
+			std::cerr << "FRAGMENT_SHADER_COMPILATION_ERROR:\n" << message << std::endl;
+		}
 
 		// Link shaders
 		m_ShaderProgram = glCreateProgram();
