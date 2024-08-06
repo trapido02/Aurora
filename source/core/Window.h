@@ -4,6 +4,11 @@
 
 namespace Core {
 
+	enum class KEYCODE
+	{
+		ESCAPE = GLFW_KEY_ESCAPE,
+	};
+
 	class Window
 	{
 	public:
@@ -12,6 +17,8 @@ namespace Core {
 
 		void OnUpdate();
 		void SetVsync(bool state);
+
+		bool GetKeyDown(KEYCODE keycode);
 	private:
 		GLFWwindow* m_Window;
 

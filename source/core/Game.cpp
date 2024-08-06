@@ -64,6 +64,8 @@ namespace Core {
 
 		while (m_IsRunning)
 		{
+			Game::ProcessInput();
+
 			m_Renderer->Clear();
 			m_Renderer->ClearColor(0.1f, 0.3f, 0.2f, 1.0f);
 
@@ -84,6 +86,14 @@ namespace Core {
 		delete m_Shader;
 		delete m_VertexArray;
 		delete m_VertexBuffer;
+	}
+
+	void Game::ProcessInput()
+	{
+		if (m_Window->GetKeyDown(Core::KEYCODE::ESCAPE))
+		{
+			Game::Shutdown();
+		}
 	}
 
 }

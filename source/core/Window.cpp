@@ -42,4 +42,11 @@ namespace Core {
         m_Vsync = state;
     }
 
+    bool Window::GetKeyDown(KEYCODE keycode)
+    {
+        if (glfwGetKey(m_Window, (int)keycode) == GLFW_PRESS) {
+            return true;
+        }
+    }
+
 }

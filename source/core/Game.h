@@ -24,6 +24,7 @@ namespace Core {
 		void Create();
 		void Run();
 		void Shutdown();
+		void ProcessInput();
 	private:
 		Game() = default;
 		~Game() = default;
