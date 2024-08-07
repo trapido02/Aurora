@@ -44,7 +44,7 @@ namespace Core {
 		m_VertexArray->AttachBuffer(*m_VertexBuffer, layout);
 
 		m_IndexBuffer = new Renderer::IndexBuffer(indices, 12);
-		m_Texture = new Renderer::Texture("resources/textures/texture.jpg");
+		m_Texture = new Renderer::Texture("resources/textures/bird.png");
 
 		m_VertexBuffer->Unbind();
 		m_VertexArray->Unbind();
