@@ -121,4 +121,10 @@ namespace Renderer {
 		glUniform1i(uniformLocation, v1);
 	}
 
+	void Shader::SetUniformMatrix4fv(GLchar* name, glm::mat4& value)
+	{
+		int uniformLocation = glGetUniformLocation(m_ShaderProgram, name);
+		glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &value[0][0]);
+	}
+
 }

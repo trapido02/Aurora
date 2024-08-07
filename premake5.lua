@@ -14,7 +14,8 @@ project "Aurora"
 		"source",
 		"vendor/glfw/include",
 		"vendor/glad/include",
-		"vendor/stb_image"
+		"vendor/stb_image",
+		"vendor/glm"
 	}
 
 	libdirs

@@ -4,6 +4,9 @@
 #include <string>
 
 #include <stb_image/stb_image.h>
+#include <glm.hpp>
+#include <gtc/matrix_transform.hpp>
+#include <gtc/type_ptr.hpp>
 
 namespace Core {
 
@@ -67,6 +70,18 @@ namespace Core {
 
 			m_Shader->Bind();
 			m_VertexArray->Bind();
+
+			glm::mat4 model = glm::mat4(1.0f);
+			glm::mat4 view = glm::mat4(1.0f);
+			glm::mat4 projection = glm::mat4(1.0f);
+
+			model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+			view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+			projection = glm::perspective(glm::radians(45.0f), (float)720 * 16 / 9 / (float)720, 0.1f, 100.0f);
+
+			glm::mat4 mvp = projection * view * model;
+
+			m_Shader->SetUniformMatrix4fv("mvp", mvp);
 
 			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
