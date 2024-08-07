@@ -44,32 +44,7 @@ namespace Core {
 		m_VertexArray->AttachBuffer(*m_VertexBuffer, layout);
 
 		m_IndexBuffer = new Renderer::IndexBuffer(indices, 12);
-
-		// Create the texture
-		unsigned int texture;
-		glGenTextures(1, &texture);
-		glBindTexture(GL_TEXTURE_2D, texture);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-		int width, height, nrChannels;
-		const std::string& texturePath = "resources/textures/texture.jpg";
-		stbi_set_flip_vertically_on_load(1);
-		unsigned char* data = stbi_load(texturePath.c_str(), &width, &height, &nrChannels, 0);
-		if (data)
-		{
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
-			glGenerateMipmap(GL_TEXTURE_2D);
-		}
-		else
-		{
-			std::cerr << "Failed to load texture" << std::endl;
-		}
-		stbi_image_free(data);
+		m_Texture = new Renderer::Texture("resources/textures/texture.jpg");
 
 		m_VertexBuffer->Unbind();
 		m_VertexArray->Unbind();
@@ -81,7 +56,7 @@ namespace Core {
 			m_Renderer->Clear();
 			m_Renderer->ClearColor(0.1f, 0.3f, 0.2f, 1.0f);
 
-			glBindTexture(GL_TEXTURE_2D, texture);
+			m_Texture->Bind();
 
 			m_Shader->Bind();
 			m_VertexArray->Bind();
