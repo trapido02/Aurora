@@ -3,30 +3,6 @@
 #include <iostream>
 #include <string>
 
-const char* vertexShaderSource = R"(
-#version 450 core
-layout (location = 0) in vec3 aPos;
-layout (location = 1) in vec3 aColor;
-
-out vec3 ourColor;
-
-void main()
-{
-	gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);
-	ourColor = aColor;
-}
-)";
-const char* fragmentShaderSource = R"(
-#version 450 core
-out vec4 FragColor;
-in vec3 ourColor;
-
-void main()
-{
-	FragColor = vec4(ourColor, 1.0f);
-}
-)";
-
 namespace Core {
 
 	void Game::Create()
@@ -47,7 +23,7 @@ namespace Core {
 		};
 
 		// Create the Shader, VBO, EBO and VAO
-		m_Shader = new Renderer::Shader(vertexShaderSource, fragmentShaderSource);
+		m_Shader = new Renderer::Shader("resources/shaders/shader.vert", "resources/shaders/shader.frag");
 		m_VertexArray = new Renderer::VertexArray;
 		m_VertexBuffer = new Renderer::VertexBuffer(sizeof(vertices), vertices, GL_STATIC_DRAW);
 

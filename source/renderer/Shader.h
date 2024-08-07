@@ -9,7 +9,7 @@ namespace Renderer {
 	class Shader
 	{
 	public:
-		Shader(const char* vertexShaderSource, const char* fragmentShaderSource);
+		Shader(const char* vertexShaderPath, const char* fragmentShaderPath);
 		~Shader();
 
 		void Bind();

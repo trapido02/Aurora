@@ -1,11 +1,56 @@
 #include "Shader.h"
 
 #include <iostream>
+#include <fstream>
+#include <sstream>
 
 namespace Renderer {
 
-	Shader::Shader(const char* vertexShaderSource, const char* fragmentShaderSource)
+	Shader::Shader(const char* vertexShaderPath, const char* fragmentShaderPath)
 	{
+		std::string vertexShaderSourceString;
+		std::string fragmentShaderSourceString;
+
+		std::ifstream vertexShaderStream;
+		std::ifstream fragmentShaderStream;
+
+		vertexShaderStream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+		fragmentShaderStream.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+
+		// Parse shaders
+		try
+		{
+			{
+				vertexShaderStream.open(vertexShaderPath);
+				vertexShaderStream.exceptions(std::ifstream::badbit);
+				std::string line;
+				std::stringstream vertexShaderStringStream;
+				while (std::getline(vertexShaderStream, line))
+				{
+					vertexShaderStringStream << line << "\n";
+				}
+				vertexShaderSourceString = vertexShaderStringStream.str();
+			}
+			{
+				fragmentShaderStream.open(fragmentShaderPath);
+				fragmentShaderStream.exceptions(std::ifstream::badbit);
+				std::string line;
+				std::stringstream fragmentShaderStringStream;
+				while (std::getline(fragmentShaderStream, line))
+				{
+					fragmentShaderStringStream << line << "\n";
+				}
+				fragmentShaderSourceString = fragmentShaderStringStream.str();
+			}
+		}
+		catch (std::ifstream::failure& e)
+		{
+			std::cerr << "SHADER_LOADING_ERROR: " << e.what() << std::endl;
+		};
+
+		const char* vertexShaderSource = vertexShaderSourceString.c_str();
+		const char* fragmentShaderSource = fragmentShaderSourceString.c_str();
+
 		// Compile shaders
 		unsigned int vertexShader = glCreateShader(GL_VERTEX_SHADER);
 		unsigned int fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
