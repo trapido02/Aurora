@@ -7,13 +7,14 @@ project "Aurora"
 	language "C++"
 	targetdir "bin/%{cfg.buildcfg}"
 
-	files { "source/**.h", "source/**.cpp", "vendor/glad/src/glad.c" }
+	files { "source/**.h", "source/**.cpp", "vendor/glad/src/glad.c", "vendor/stb_image/stb_image/stb_image.cpp" }
 
 	includedirs
 	{
 		"source",
 		"vendor/glfw/include",
-		"vendor/glad/include"
+		"vendor/glad/include",
+		"vendor/stb_image"
 	}
 
 	libdirs
