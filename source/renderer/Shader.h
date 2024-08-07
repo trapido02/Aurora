@@ -16,6 +16,7 @@ namespace Renderer {
 		void Unbind();
 
 		void SetUniform4f(GLchar* name, float v1, float v2, float v3, float v4);
+		void SetUniform1i(GLchar* name, int v1);
 	private:
 		unsigned int m_ShaderProgram;
 	};

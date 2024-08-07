@@ -38,7 +38,9 @@ namespace Core {
 		Renderer::VertexArray* m_VertexArray = nullptr;
 		Renderer::VertexBuffer* m_VertexBuffer = nullptr;
 		Renderer::IndexBuffer* m_IndexBuffer = nullptr;
-		Renderer::Texture* m_Texture = nullptr;
+
+		Renderer::Texture* m_Texture1 = nullptr;
+		Renderer::Texture* m_Texture2 = nullptr;
 	};
 
 }

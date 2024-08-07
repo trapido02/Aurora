@@ -42,10 +42,16 @@ namespace Core {
 		layout.Push<float>(3);
 		layout.Push<float>(2);
 		m_VertexArray->AttachBuffer(*m_VertexBuffer, layout);
+		m_Shader->Bind();
 
 		m_IndexBuffer = new Renderer::IndexBuffer(indices, 12);
-		m_Texture = new Renderer::Texture("resources/textures/bird.png");
+		m_Texture1 = new Renderer::Texture("resources/textures/texture.jpg");
+		m_Texture2 = new Renderer::Texture("resources/textures/bird.png");
 
+		m_Shader->SetUniform1i("texture1", 0);
+		m_Shader->SetUniform1i("texture2", 1);
+
+		m_Shader->Unbind();
 		m_VertexBuffer->Unbind();
 		m_VertexArray->Unbind();
 
@@ -56,7 +62,8 @@ namespace Core {
 			m_Renderer->Clear();
 			m_Renderer->ClearColor(0.1f, 0.3f, 0.2f, 1.0f);
 
-			m_Texture->Bind();
+			m_Texture1->Bind();
+			m_Texture2->Bind(1);
 
 			m_Shader->Bind();
 			m_VertexArray->Bind();
@@ -76,6 +83,8 @@ namespace Core {
 		delete m_VertexArray;
 		delete m_VertexBuffer;
 		delete m_IndexBuffer;
+		delete m_Texture1;
+		delete m_Texture2;
 	}
 
 	void Game::ProcessInput()

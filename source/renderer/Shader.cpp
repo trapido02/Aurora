@@ -115,4 +115,10 @@ namespace Renderer {
 		glUniform4f(uniformLocation, v1, v2, v3, v4);
 	}
 
+	void Shader::SetUniform1i(GLchar* name, int v1)
+	{
+		int uniformLocation = glGetUniformLocation(m_ShaderProgram, name);
+		glUniform1i(uniformLocation, v1);
+	}
+
 }
