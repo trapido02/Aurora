@@ -21,16 +21,56 @@ namespace Core {
 		// Setup vertices
 
 		float vertices[] = {
-			// positions          // colors           // texture coords
-			 0.5f,  0.5f, 0.0f,   1.0f, 0.0f, 0.0f,   1.0f, 1.0f, // top right
-			 0.5f, -0.5f, 0.0f,   0.0f, 1.0f, 0.0f,   1.0f, 0.0f, // bottom right
-			-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, 1.0f,   0.0f, 0.0f, // bottom left
-			-0.5f,  0.5f, 0.0f,   1.0f, 1.0f, 0.0f,   0.0f, 1.0f  // top left 
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 		};
+		/*
 		unsigned int indices[] = {
 			0, 1, 3, // first triangle
 			1, 2, 3  // second triangle
 		};
+		*/
+
+		glEnable(GL_DEPTH_TEST);
 
 		// Create the Shader, VBO, EBO and VAO
 		m_Shader = new Renderer::Shader("resources/shaders/shader.vert", "resources/shaders/shader.frag");
@@ -42,12 +82,11 @@ namespace Core {
 
 		Renderer::VertexBufferLayout layout;
 		layout.Push<float>(3);
-		layout.Push<float>(3);
 		layout.Push<float>(2);
 		m_VertexArray->AttachBuffer(*m_VertexBuffer, layout);
 		m_Shader->Bind();
 
-		m_IndexBuffer = new Renderer::IndexBuffer(indices, 12);
+		//m_IndexBuffer = new Renderer::IndexBuffer(indices, 12);
 		m_Texture1 = new Renderer::Texture("resources/textures/texture.jpg");
 		m_Texture2 = new Renderer::Texture("resources/textures/bird.png");
 
@@ -57,6 +96,7 @@ namespace Core {
 		m_Shader->Unbind();
 		m_VertexBuffer->Unbind();
 		m_VertexArray->Unbind();
+
 
 		while (m_IsRunning)
 		{
@@ -75,7 +115,7 @@ namespace Core {
 			glm::mat4 view = glm::mat4(1.0f);
 			glm::mat4 projection = glm::mat4(1.0f);
 
-			model = glm::rotate(model, glm::radians(-55.0f), glm::vec3(1.0f, 0.0f, 0.0f));
+			model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
 			view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
 			projection = glm::perspective(glm::radians(45.0f), (float)720 * 16 / 9 / (float)720, 0.1f, 100.0f);
 
@@ -83,7 +123,8 @@ namespace Core {
 
 			m_Shader->SetUniformMatrix4fv("mvp", mvp);
 
-			glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+			glDrawArrays(GL_TRIANGLES, 0, 36);
 
 			m_Window->OnUpdate();
 		}
