@@ -29,8 +29,6 @@ namespace Renderer {
 			m_Textures[i].Bind(i);
 		}
 
-		std::cout << name << std::endl;
-
 		glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, 0);
 
 		vertexArray->Unbind();
