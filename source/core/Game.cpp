@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
 
 #include <stb_image/stb_image.h>
 #include <glm.hpp>
@@ -18,85 +19,32 @@ namespace Core {
 
 	void Game::Run()
 	{
-		// Setup vertices
-
-		float vertices[] = {
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-
-		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-		 0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		 0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-		-0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f
-		};
-		/*
-		unsigned int indices[] = {
-			0, 1, 3, // first triangle
-			1, 2, 3  // second triangle
-		};
-		*/
-
 		glEnable(GL_DEPTH_TEST);
 
-		// Create the Shader, VBO, EBO and VAO
+		// Setup vertices
+		Renderer::Vertex vertices[] = {
+			Renderer::Vertex{ glm::vec3(-1.0f, 0.0f,  1.0f),	glm::vec2(0.0f, 0.0f) },
+			Renderer::Vertex{ glm::vec3(-1.0f, 0.0f, -1.0f),	glm::vec2(0.0f, 1.0f) },
+			Renderer::Vertex{ glm::vec3( 1.0f, 0.0f, -1.0f),	glm::vec2(1.0f, 1.0f) },
+			Renderer::Vertex{ glm::vec3( 1.0f, 0.0f,  1.0f),	glm::vec2(1.0f, 0.0f) }
+		};
+
+		unsigned int indices[] = {
+			0, 1, 2,
+			0, 2, 3
+		};
+
+		Renderer::Texture textures[] = {
+			Renderer::Texture("resources/textures/texture.jpg"),
+			Renderer::Texture("resources/textures/bird.png"),
+		};
+
+		std::vector<Renderer::Vertex> verts(vertices, vertices + sizeof(vertices) / sizeof(Renderer::Vertex));
+		std::vector<unsigned int> ind(indices, indices + sizeof(indices) / sizeof(unsigned int));
+		std::vector<Renderer::Texture> tex(textures, textures + sizeof(textures) / sizeof(Renderer::Texture));
+
 		m_Shader = new Renderer::Shader("resources/shaders/shader.vert", "resources/shaders/shader.frag");
-		m_VertexArray = new Renderer::VertexArray;
-		m_VertexBuffer = new Renderer::VertexBuffer(sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-		m_VertexArray->Bind();
-		m_VertexBuffer->Bind();
-
-		Renderer::VertexBufferLayout layout;
-		layout.Push<float>(3);
-		layout.Push<float>(2);
-		m_VertexArray->AttachBuffer(*m_VertexBuffer, layout);
-		m_Shader->Bind();
-
-		//m_IndexBuffer = new Renderer::IndexBuffer(indices, 12);
-		m_Texture1 = new Renderer::Texture("resources/textures/texture.jpg");
-		m_Texture2 = new Renderer::Texture("resources/textures/bird.png");
-
-		m_Shader->SetUniform1i("texture1", 0);
-		m_Shader->SetUniform1i("texture2", 1);
-
-		m_Shader->Unbind();
-		m_VertexBuffer->Unbind();
-		m_VertexArray->Unbind();
-
+		m_Mesh = new Renderer::Mesh(verts, ind, tex);
 
 		while (m_IsRunning)
 		{
@@ -104,12 +52,6 @@ namespace Core {
 
 			m_Renderer->Clear();
 			m_Renderer->ClearColor(0.1f, 0.3f, 0.2f, 1.0f);
-
-			m_Texture1->Bind();
-			m_Texture2->Bind(1);
-
-			m_Shader->Bind();
-			m_VertexArray->Bind();
 
 			glm::mat4 model = glm::mat4(1.0f);
 			glm::mat4 view = glm::mat4(1.0f);
@@ -121,10 +63,11 @@ namespace Core {
 
 			glm::mat4 mvp = projection * view * model;
 
+			m_Shader->Bind();
 			m_Shader->SetUniformMatrix4fv("mvp", mvp);
+			m_Shader->Unbind();
 
-			//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
+			m_Mesh->Draw(*m_Shader);
 
 			m_Window->OnUpdate();
 		}
@@ -136,11 +79,7 @@ namespace Core {
 		delete m_Window;
 		delete m_Renderer;
 		delete m_Shader;
-		delete m_VertexArray;
-		delete m_VertexBuffer;
-		delete m_IndexBuffer;
-		delete m_Texture1;
-		delete m_Texture2;
+		delete m_Mesh;
 	}
 
 	void Game::ProcessInput()

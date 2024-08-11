@@ -2,14 +2,16 @@
 
 #include "VertexBuffer.h"
 
+#include <iostream>
+
 namespace Renderer {
 
-	VertexBuffer::VertexBuffer(unsigned int size, const void* data, GLenum usage)
+	VertexBuffer::VertexBuffer(std::vector<Vertex> vertices)
 	{
 		glGenBuffers(1, &m_VertexBufferID);
-		glBindBuffer(GL_ARRAY_BUFFER, m_VertexBufferID);
-		glBufferData(GL_ARRAY_BUFFER, size, data, usage);
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		Bind();
+		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
+		Unbind();
 	}
 
 	VertexBuffer::~VertexBuffer()

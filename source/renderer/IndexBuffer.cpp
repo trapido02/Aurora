@@ -4,11 +4,12 @@
 
 namespace Renderer {
 
-	IndexBuffer::IndexBuffer(unsigned int* data, unsigned int count)
+	IndexBuffer::IndexBuffer(std::vector<unsigned int> indices)
 	{
 		glGenBuffers(1, &m_IndexBufferID);
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_IndexBufferID);
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, count * sizeof(unsigned int), data, GL_STATIC_DRAW);
+		Bind();
+		glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned int), indices.data(), GL_STATIC_DRAW);
+		Unbind();
 	}
 
 	IndexBuffer::~IndexBuffer()

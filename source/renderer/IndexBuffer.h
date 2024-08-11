@@ -1,11 +1,13 @@
 #pragma once
 
+#include <vector>
+
 namespace Renderer {
 
 	class IndexBuffer
 	{
 	public:
-		IndexBuffer(unsigned int* data, unsigned int count);
+		IndexBuffer(std::vector<unsigned int> indices);
 		~IndexBuffer();
 
 		void Bind();

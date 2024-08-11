@@ -10,7 +10,7 @@ namespace Renderer {
 		VertexArray();
 		~VertexArray();
 
-		void AttachBuffer(VertexBuffer& vertexBuffer, VertexBufferLayout& layout);
+		void AttachBuffer(VertexBuffer& vertexBuffer);
 
 		void Bind();
 		void Unbind();
