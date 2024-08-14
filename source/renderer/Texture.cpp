@@ -40,7 +40,9 @@ namespace Renderer {
 
 	Texture::~Texture()
 	{
-		glDeleteTextures(1, &m_TextureID);
+		// Temporarily need to comment out this OpenGL call
+		// Will add move constructor to all OpenGL wrappers later but for now this need to be done for it to work
+		//glDeleteTextures(1, &m_TextureID);
 	}
 
 	void Texture::Bind(unsigned int unit)

@@ -9,6 +9,30 @@
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 
+// TODO:
+// 
+// - Add precompiled headers
+// - Add camera class
+// - Add linux support
+// - Add move constructors to OpenGL wrappers
+// - Fix the rest of the wrappers to not violate C++'s rule of 3/5
+// - Better error checking
+//
+
+void GLAPIENTRY MessageCallback(
+	GLenum source,
+	GLenum type,
+	GLuint id,
+	GLenum severity,
+	GLsizei length,
+	const GLchar* message,
+	const void* userParam)
+{
+	fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
+		(type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
+		type, severity, message);
+}
+
 namespace Core {
 
 	void Game::Create()
@@ -20,31 +44,11 @@ namespace Core {
 	void Game::Run()
 	{
 		glEnable(GL_DEPTH_TEST);
-
-		// Setup vertices
-		Renderer::Vertex vertices[] = {
-			Renderer::Vertex{ glm::vec3(-1.0f, 0.0f,  1.0f),	glm::vec2(0.0f, 0.0f) },
-			Renderer::Vertex{ glm::vec3(-1.0f, 0.0f, -1.0f),	glm::vec2(0.0f, 1.0f) },
-			Renderer::Vertex{ glm::vec3( 1.0f, 0.0f, -1.0f),	glm::vec2(1.0f, 1.0f) },
-			Renderer::Vertex{ glm::vec3( 1.0f, 0.0f,  1.0f),	glm::vec2(1.0f, 0.0f) }
-		};
-
-		unsigned int indices[] = {
-			0, 1, 2,
-			0, 2, 3
-		};
-
-		Renderer::Texture textures[] = {
-			Renderer::Texture("resources/textures/texture.jpg"),
-			Renderer::Texture("resources/textures/bird.png"),
-		};
-
-		std::vector<Renderer::Vertex> verts(vertices, vertices + sizeof(vertices) / sizeof(Renderer::Vertex));
-		std::vector<unsigned int> ind(indices, indices + sizeof(indices) / sizeof(unsigned int));
-		std::vector<Renderer::Texture> tex(textures, textures + sizeof(textures) / sizeof(Renderer::Texture));
+		glEnable(GL_DEBUG_OUTPUT);
+		glDebugMessageCallback(MessageCallback, 0);
 
 		m_Shader = new Renderer::Shader("resources/shaders/shader.vert", "resources/shaders/shader.frag");
-		m_Mesh = new Renderer::Mesh(verts, ind, tex);
+		m_Model = new Renderer::Model("resources/models/Suzanne.gltf");
 
 		while (m_IsRunning)
 		{
@@ -67,7 +71,7 @@ namespace Core {
 			m_Shader->SetUniformMatrix4fv("mvp", mvp);
 			m_Shader->Unbind();
 
-			m_Mesh->Draw(*m_Shader);
+			m_Model->Draw(*m_Shader);
 
 			m_Window->OnUpdate();
 		}
@@ -79,7 +83,7 @@ namespace Core {
 		delete m_Window;
 		delete m_Renderer;
 		delete m_Shader;
-		delete m_Mesh;
+		delete m_Model;
 	}
 
 	void Game::ProcessInput()

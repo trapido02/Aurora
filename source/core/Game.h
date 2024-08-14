@@ -6,6 +6,7 @@
 #include "renderer/VertexBuffer.h"
 #include "renderer/IndexBuffer.h"
 #include "renderer/Texture.h"
+#include "renderer/Model.h"
 #include "renderer/Mesh.h"
 #include "Window.h"
 
@@ -37,7 +38,7 @@ namespace Core {
 		Renderer::Renderer* m_Renderer = nullptr;
 		Renderer::Shader* m_Shader = nullptr;
 
-		Renderer::Mesh* m_Mesh = nullptr;
+		Renderer::Model* m_Model = nullptr;
 	};
 
 }
