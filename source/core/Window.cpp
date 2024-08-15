@@ -1,3 +1,5 @@
+#include "pch.h"
+
 #include <glad/glad.h>
 #include "Window.h"
 #include "Game.h"

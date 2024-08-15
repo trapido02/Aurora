@@ -10,6 +10,9 @@ project "Aurora"
 	language "C++"
 	targetdir "bin/%{cfg.buildcfg}"
 
+	pchheader "pch.h"
+	pchsource "source/pch.cpp"
+
 	files { "source/**.h", "source/**.cpp", "vendor/glad/src/glad.c", "vendor/stb_image/stb_image/stb_image.cpp" }
 
 	includedirs
@@ -35,6 +38,12 @@ project "Aurora"
 		"assimp-vc143-mtd.lib",
 		"zlibstaticd.lib"
 	}
+
+	filter "files:vendor/**.c"
+    	flags { "NoPCH" }
+
+	filter "files:vendor/**.cpp"
+    	flags { "NoPCH" }
 
 	filter "configurations:Debug"
 		defines { "DEBUG" }

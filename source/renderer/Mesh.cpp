@@ -1,5 +1,6 @@
+#include "pch.h"
+
 #include "Mesh.h"
-#include <iostream>
 
 namespace Renderer {
 

@@ -1,8 +1,9 @@
+#include "pch.h"
+
 #include <glad/glad.h>
 
 #include "Texture.h"
 
-#include <iostream>
 #include <stb_image/stb_image.h>
 
 namespace Renderer {

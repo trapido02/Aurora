@@ -1,8 +1,8 @@
+#include "pch.h"
+
 #include <glad/glad.h>
 
 #include "VertexArray.h"
-
-#include <iostream>
 
 namespace Renderer {
 

@@ -1,8 +1,6 @@
-#include "Game.h"
+#include "pch.h"
 
-#include <iostream>
-#include <string>
-#include <vector>
+#include "Game.h"
 
 #include <stb_image/stb_image.h>
 #include <glm.hpp>
@@ -11,7 +9,6 @@
 
 // TODO:
 // 
-// - Add precompiled headers
 // - Add camera class
 // - Add linux support
 // - Add move constructors to OpenGL wrappers

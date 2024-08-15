@@ -1,8 +1,6 @@
-#include "Shader.h"
+#include "pch.h"
 
-#include <iostream>
-#include <fstream>
-#include <sstream>
+#include "Shader.h"
 
 namespace Renderer {
 

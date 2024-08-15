@@ -1,6 +1,6 @@
-#include "Model.h"
+#include "pch.h"
 
-#include <iostream>
+#include "Model.h"
 
 namespace Renderer {
 

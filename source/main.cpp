@@ -1,6 +1,6 @@
-#include "core/Game.h"
+#include "pch.h"
 
-#include <iostream>
+#include "core/Game.h"
 
 int main()
 {
