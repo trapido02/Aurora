@@ -8,6 +8,7 @@
 #include "renderer/Texture.h"
 #include "renderer/Model.h"
 #include "renderer/Mesh.h"
+#include "renderer/Camera.h"
 #include "Window.h"
 
 #include <memory>
@@ -37,6 +38,7 @@ namespace Core {
 
 		Renderer::Renderer* m_Renderer = nullptr;
 		Renderer::Shader* m_Shader = nullptr;
+		Renderer::Camera* m_Camera = nullptr;
 
 		Renderer::Model* m_Model = nullptr;
 	};

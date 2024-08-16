@@ -7,6 +7,10 @@ namespace Core {
 	enum class KEYCODE
 	{
 		ESCAPE = GLFW_KEY_ESCAPE,
+		W = GLFW_KEY_W,
+		A = GLFW_KEY_A,
+		S = GLFW_KEY_S,
+		D = GLFW_KEY_D,
 	};
 
 	class Window
@@ -19,6 +23,12 @@ namespace Core {
 		void SetVsync(bool state);
 
 		bool GetKeyDown(KEYCODE keycode);
+		std::pair<double, double> GetMousePosition();
+
+		int GetHeight();
+		int GetWidth();
+
+		void SetCursorPosition(double x, double y);
 	private:
 		GLFWwindow* m_Window;
 

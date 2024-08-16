@@ -9,7 +9,6 @@
 
 // TODO:
 // 
-// - Add camera class
 // - Add linux support
 // - Add move constructors to OpenGL wrappers
 // - Fix the rest of the wrappers to not violate C++'s rule of 3/5
@@ -46,27 +45,22 @@ namespace Core {
 
 		m_Shader = new Renderer::Shader("resources/shaders/shader.vert", "resources/shaders/shader.frag");
 		m_Model = new Renderer::Model("resources/models/Suzanne.gltf");
+		m_Camera = new Renderer::Camera(m_Window, glm::vec3(0.0f, 0.0f, 2.0f));
+
+		float timeSinceLastFrame = 0.0f;
 
 		while (m_IsRunning)
 		{
 			Game::ProcessInput();
 
+			// Calculate deltaTime
+			float deltaTime = glfwGetTime() - timeSinceLastFrame;
+			timeSinceLastFrame = glfwGetTime();
+
 			m_Renderer->Clear();
 			m_Renderer->ClearColor(0.1f, 0.3f, 0.2f, 1.0f);
 
-			glm::mat4 model = glm::mat4(1.0f);
-			glm::mat4 view = glm::mat4(1.0f);
-			glm::mat4 projection = glm::mat4(1.0f);
-
-			model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
-			view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-			projection = glm::perspective(glm::radians(45.0f), (float)720 * 16 / 9 / (float)720, 0.1f, 100.0f);
-
-			glm::mat4 mvp = projection * view * model;
-
-			m_Shader->Bind();
-			m_Shader->SetUniformMatrix4fv("mvp", mvp);
-			m_Shader->Unbind();
+			m_Camera->Update(deltaTime, *m_Shader);
 
 			m_Model->Draw(*m_Shader);
 
@@ -81,6 +75,8 @@ namespace Core {
 		delete m_Renderer;
 		delete m_Shader;
 		delete m_Model;
+		// Fix the memory issue with this!
+		//delete m_Camera;
 	}
 
 	void Game::ProcessInput()

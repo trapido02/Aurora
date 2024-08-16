@@ -23,6 +23,7 @@ namespace Core {
 
         glfwMakeContextCurrent(m_Window);
         glfwSwapInterval(m_Vsync);
+        glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
         // Load glad, should maybe be removed since this window class should ONLY handle the window, and not glad really.
         gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -58,6 +59,28 @@ namespace Core {
         if (glfwGetKey(m_Window, (int)keycode) == GLFW_PRESS) {
             return true;
         }
+    }
+
+    std::pair<double, double> Window::GetMousePosition()
+    {
+        double MouseX, MouseY;
+        glfwGetCursorPos(m_Window, &MouseX, &MouseY);
+        return std::make_pair(MouseX, MouseY);
+    }
+
+    int Window::GetHeight()
+    {
+        return m_Height;
+    }
+
+    int Window::GetWidth()
+    {
+        return m_Width;
+    }
+
+    void Window::SetCursorPosition(double x, double y)
+    {
+        glfwSetCursorPos(m_Window, x, y);
     }
 
 }
