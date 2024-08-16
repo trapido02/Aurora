@@ -9,7 +9,6 @@
 
 // TODO:
 // 
-// - Add linux support
 // - Add move constructors to OpenGL wrappers
 // - Fix the rest of the wrappers to not violate C++'s rule of 3/5
 // - Better error checking
