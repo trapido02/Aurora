@@ -5,6 +5,6 @@
 NOTE: Only Windows is supported for now until there is demand for more platforms.
 #### Windows
 1. Clone the git respsitory with `git clone https://github.com/trapido02/Aurora`
-2. Run the file called `setup-windows.bat` inside the scripts directory
+2. Run the file called `setup.bat`
 
 That should generate the visual studio solution files that you can open and just hit F5 to run the project.
