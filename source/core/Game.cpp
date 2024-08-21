@@ -50,8 +50,6 @@ namespace Core {
 
 		while (m_IsRunning)
 		{
-			Game::ProcessInput();
-
 			// Calculate deltaTime
 			float deltaTime = glfwGetTime() - timeSinceLastFrame;
 			timeSinceLastFrame = glfwGetTime();
@@ -64,6 +62,7 @@ namespace Core {
 			m_Model->Draw(*m_Shader);
 
 			m_Window->OnUpdate();
+			Game::ProcessInput();
 		}
 	}
 
@@ -74,8 +73,7 @@ namespace Core {
 		delete m_Renderer;
 		delete m_Shader;
 		delete m_Model;
-		// Fix the memory issue with this!
-		//delete m_Camera;
+		delete m_Camera;
 	}
 
 	void Game::ProcessInput()

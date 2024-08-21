@@ -23,17 +23,14 @@ namespace Core {
 		void SetVsync(bool state);
 
 		bool GetKeyDown(KEYCODE keycode);
-		std::pair<double, double> GetMousePosition();
-
-		int GetHeight();
-		int GetWidth();
+		void GetMousePosition(double& x, double& y);
+		void GetSize(int& width, int& height);
 
 		void SetCursorPosition(double x, double y);
 	private:
 		GLFWwindow* m_Window;
 
 		const char* m_Title;
-		int m_Width, m_Height;
 		bool m_Vsync;
 	};
 

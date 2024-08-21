@@ -20,12 +20,18 @@ namespace Renderer {
 		glm::mat4 view = glm::mat4(1.0f);
 		glm::mat4 projection = glm::mat4(1.0f);
 
-		view = glm::lookAt(m_Position, m_Position + m_Orientation, m_Up);
-		projection = glm::perspective(glm::radians(m_FOV), (float)(m_Window->GetWidth() / m_Window->GetHeight()), m_NearPlane, m_FarPlane);
+		int windowWidth, windowHeight;
+		m_Window->GetSize(windowWidth, windowHeight);
 
-		shader.Bind();
-		shader.SetUniformMatrix4fv("mvp", projection * view);
-		shader.Unbind();
+		if (windowWidth != NULL || windowHeight != NULL)
+		{
+			view = glm::lookAt(m_Position, m_Position + m_Orientation, m_Up);
+			projection = glm::perspective(glm::radians(m_FOV), (float)windowWidth / (float)windowHeight, m_NearPlane, m_FarPlane);
+
+			shader.Bind();
+			shader.SetUniformMatrix4fv("mvp", projection * view);
+			shader.Unbind();
+		}
 	}
 
 	void Camera::ProcessInput(float deltaTime)
@@ -52,13 +58,14 @@ namespace Renderer {
 
 	void Camera::ProcessMouse()
 	{
-		std::pair<double, double> position = m_Window->GetMousePosition();
+		double mouseX, mouseY;
+		m_Window->GetMousePosition(mouseX, mouseY);
 
-		double mouseX = position.first;
-		double mouseY = position.second;
+		int windowWidth, windowHeight;
+		m_Window->GetSize(windowWidth, windowHeight);
 
-		float rotX = m_Sensitivity * (float)(mouseY - (m_Window->GetHeight() / 2)) / m_Window->GetHeight();
-		float rotY = m_Sensitivity * (float)(mouseX - (m_Window->GetWidth() / 2)) / m_Window->GetWidth();
+		float rotX = m_Sensitivity * ((float)mouseY - ((float)windowHeight / 2.0f)) / (float)windowHeight;
+		float rotY = m_Sensitivity * ((float)mouseX - ((float)windowWidth / 2.0f)) / (float)windowWidth;
 
 		glm::vec3 newOrientation = glm::rotate(m_Orientation, glm::radians(-rotX), glm::normalize(glm::cross(m_Orientation, m_Up)));
 
@@ -69,7 +76,7 @@ namespace Renderer {
 
 		m_Orientation = glm::rotate(m_Orientation, glm::radians(-rotY), m_Up);
 		
-		m_Window->SetCursorPosition((m_Window->GetWidth() / 2), (m_Window->GetHeight() / 2));
+		m_Window->SetCursorPosition(((float)windowWidth / 2), ((float)windowHeight / 2));
 	}
 
 }

@@ -7,10 +7,7 @@
 namespace Core {
 
     Window::Window(const char* title, int width, int height)
-        : m_Window(nullptr),
-          m_Title(title),
-          m_Width(width),
-          m_Height(height),
+        : m_Title(title),
           m_Vsync(false)
     {
         glfwInit();
@@ -61,21 +58,14 @@ namespace Core {
         }
     }
 
-    std::pair<double, double> Window::GetMousePosition()
+    void Window::GetMousePosition(double& x, double& y)
     {
-        double MouseX, MouseY;
-        glfwGetCursorPos(m_Window, &MouseX, &MouseY);
-        return std::make_pair(MouseX, MouseY);
+        glfwGetCursorPos(m_Window, &x, &y);
     }
 
-    int Window::GetHeight()
+    void Window::GetSize(int& width, int& height)
     {
-        return m_Height;
-    }
-
-    int Window::GetWidth()
-    {
-        return m_Width;
+        glfwGetWindowSize(m_Window, &width, &height);
     }
 
     void Window::SetCursorPosition(double x, double y)
