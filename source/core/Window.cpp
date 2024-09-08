@@ -42,6 +42,20 @@ namespace Core {
 
     void Window::OnUpdate()
     {
+        // Update FPS
+        double currentTime = glfwGetTime();
+        m_FrameCount++;
+        // If a second has passed.
+        if (currentTime - m_PreviousTime >= 1.0)
+        {
+            std::stringstream ss;
+            ss << m_Title << " [" << m_FrameCount << " FPS]";
+            glfwSetWindowTitle(m_Window, ss.str().c_str());
+
+            m_FrameCount = 0;
+            m_PreviousTime = currentTime;
+        }
+
         glfwSwapBuffers(m_Window);
         glfwPollEvents();
     }

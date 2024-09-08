@@ -32,6 +32,9 @@ namespace Core {
 
 		const char* m_Title;
 		bool m_Vsync;
+
+		double m_PreviousTime = glfwGetTime();
+		int m_FrameCount = 0;
 	};
 
 }
