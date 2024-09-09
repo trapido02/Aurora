@@ -16,6 +16,9 @@ namespace Renderer {
 		Shader(const char* vertexShaderPath, const char* fragmentShaderPath);
 		~Shader();
 
+		void Create();
+		void Destroy();
+
 		void Bind();
 		void Unbind();
 
@@ -23,7 +26,10 @@ namespace Renderer {
 		void SetUniform1i(GLchar* name, int v1);
 		void SetUniformMatrix4fv(GLchar* name, glm::mat4& value);
 	private:
-		unsigned int m_ShaderProgram;
+		unsigned int m_ShaderProgram = NULL;
+
+		const char* m_VertexShaderPath;
+		const char* m_FragmentShaderPath;
 	};
 
 }

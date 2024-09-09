@@ -8,10 +8,18 @@ namespace Renderer {
 
 	VertexArray::VertexArray()
 	{
-		glGenVertexArrays(1, &m_VertexArrayID);
 	}
 
 	VertexArray::~VertexArray()
+	{
+	}
+
+	void VertexArray::Create()
+	{
+		glGenVertexArrays(1, &m_VertexArrayID);
+	}
+
+	void VertexArray::Destroy()
 	{
 		glDeleteVertexArrays(1, &m_VertexArrayID);
 	}

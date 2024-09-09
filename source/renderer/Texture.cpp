@@ -9,7 +9,15 @@
 namespace Renderer {
 
 	Texture::Texture(std::string texturePath)
-		: m_TextureID(NULL)
+		: m_TexturePath(texturePath)
+	{
+	}
+
+	Texture::~Texture()
+	{
+	}
+
+	void Texture::Create()
 	{
 		glGenTextures(1, &m_TextureID);
 		glBindTexture(GL_TEXTURE_2D, m_TextureID);
@@ -25,7 +33,7 @@ namespace Renderer {
 
 		stbi_set_flip_vertically_on_load(1);
 		int width, height, nrChannels;
-		unsigned char* data = stbi_load(texturePath.c_str(), &width, &height, &nrChannels, 4);
+		unsigned char* data = stbi_load(m_TexturePath.c_str(), &width, &height, &nrChannels, 4);
 		if (data)
 		{
 			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
@@ -39,11 +47,9 @@ namespace Renderer {
 		stbi_image_free(data);
 	}
 
-	Texture::~Texture()
+	void Texture::Destroy()
 	{
-		// Temporarily need to comment out this OpenGL call
-		// Will add move constructor to all OpenGL wrappers later but for now this need to be done for it to work
-		//glDeleteTextures(1, &m_TextureID);
+		glDeleteTextures(1, &m_TextureID);
 	}
 
 	void Texture::Bind(unsigned int unit)

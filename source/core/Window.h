@@ -19,6 +19,9 @@ namespace Core {
 		Window(const char* title, int width, int height);
 		~Window();
 
+		void Create();
+		void Destroy();
+
 		void OnUpdate();
 		void SetVsync(bool state);
 
@@ -28,10 +31,11 @@ namespace Core {
 
 		void SetCursorPosition(double x, double y);
 	private:
-		GLFWwindow* m_Window;
+		GLFWwindow* m_Window = nullptr;
 
 		const char* m_Title;
-		bool m_Vsync;
+		int m_Width, m_Height;
+		bool m_Vsync = false;
 
 		double m_PreviousTime = glfwGetTime();
 		int m_FrameCount = 0;

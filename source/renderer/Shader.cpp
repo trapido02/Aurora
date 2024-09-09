@@ -5,6 +5,15 @@
 namespace Renderer {
 
 	Shader::Shader(const char* vertexShaderPath, const char* fragmentShaderPath)
+		: m_VertexShaderPath(vertexShaderPath), m_FragmentShaderPath(fragmentShaderPath)
+	{
+	}
+
+	Shader::~Shader()
+	{
+	}
+
+	void Shader::Create()
 	{
 		std::string vertexShaderSourceString;
 		std::string fragmentShaderSourceString;
@@ -19,7 +28,7 @@ namespace Renderer {
 		try
 		{
 			{
-				vertexShaderStream.open(vertexShaderPath);
+				vertexShaderStream.open(m_VertexShaderPath);
 				vertexShaderStream.exceptions(std::ifstream::badbit);
 				std::string line;
 				std::stringstream vertexShaderStringStream;
@@ -30,7 +39,7 @@ namespace Renderer {
 				vertexShaderSourceString = vertexShaderStringStream.str();
 			}
 			{
-				fragmentShaderStream.open(fragmentShaderPath);
+				fragmentShaderStream.open(m_FragmentShaderPath);
 				fragmentShaderStream.exceptions(std::ifstream::badbit);
 				std::string line;
 				std::stringstream fragmentShaderStringStream;
@@ -92,7 +101,7 @@ namespace Renderer {
 		glDeleteShader(fragmentShader);
 	}
 
-	Shader::~Shader()
+	void Shader::Destroy()
 	{
 		glDeleteProgram(m_ShaderProgram);
 	}

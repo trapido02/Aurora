@@ -10,12 +10,15 @@ namespace Renderer {
 		VertexArray();
 		~VertexArray();
 
+		void Create();
+		void Destroy();
+
 		void AttachBuffer(VertexBuffer& vertexBuffer);
 
 		void Bind();
 		void Unbind();
 	private:
-		unsigned int m_VertexArrayID;
+		unsigned int m_VertexArrayID = NULL;
 	};
 
 }

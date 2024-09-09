@@ -12,13 +12,14 @@ namespace Renderer {
 	class Camera
 	{
 	public:
-		Camera(Core::Window* window, glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), float FOV = 90.0f, float nearPlane = 0.1f, float farPlane = 100.0f);
+		Camera(Core::Window* window, glm::vec3 position, float fov, float nearPlane, float farPlane);
 		~Camera();
+
 		void Update(float deltaTime, Shader& shader);
 	private:
 		Core::Window* m_Window;
 
-		float m_FOV;
+		float m_Fov;
 		float m_NearPlane;
 		float m_FarPlane;
 

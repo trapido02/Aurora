@@ -17,10 +17,14 @@ namespace Renderer {
 		VertexBuffer(std::vector<Vertex> vertices);
 		~VertexBuffer();
 
+		void Create();
+		void Destroy();
+
 		void Bind();
 		void Unbind();
 	private:
-		unsigned int m_VertexBufferID;
+		unsigned int m_VertexBufferID = NULL;
+		std::vector<Vertex> m_Vertices;
 	};
 
 }

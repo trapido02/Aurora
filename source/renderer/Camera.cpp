@@ -3,8 +3,8 @@
 #include "Camera.h"
 
 namespace Renderer {
-	Camera::Camera(Core::Window* window, glm::vec3 position, float FOV, float nearPlane, float farPlane)
-		: m_Window(window), m_Position(position), m_FOV(FOV), m_NearPlane(nearPlane), m_FarPlane(farPlane)
+	Camera::Camera(Core::Window* window, glm::vec3 position, float fov, float nearPlane, float farPlane)
+		: m_Window(window), m_Position(position), m_Fov(fov), m_NearPlane(nearPlane), m_FarPlane(farPlane)
 	{
 	}
 
@@ -26,7 +26,7 @@ namespace Renderer {
 		if (windowWidth != NULL || windowHeight != NULL)
 		{
 			view = glm::lookAt(m_Position, m_Position + m_Orientation, m_Up);
-			projection = glm::perspective(glm::radians(m_FOV), (float)windowWidth / (float)windowHeight, m_NearPlane, m_FarPlane);
+			projection = glm::perspective(glm::radians(m_Fov), (float)windowWidth / (float)windowHeight, m_NearPlane, m_FarPlane);
 
 			shader.Bind();
 			shader.SetUniformMatrix4fv("mvp", projection * view);

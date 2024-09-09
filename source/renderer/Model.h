@@ -15,11 +15,16 @@ namespace Renderer {
 	{
 	public:
 		Model(std::string modelPath);
+		~Model();
+
+		void Create();
+		void Destroy();
+
 		void Draw(Shader& shader);
 	private:
-		std::vector<Texture> textures_loaded;
 		std::vector<Mesh> m_Meshes;
 		std::string m_Directory;
+		std::string m_ModelPath;
 
 		void ProcessNode(aiNode* node, const aiScene* scene);
 		Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);

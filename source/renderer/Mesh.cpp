@@ -7,19 +7,48 @@ namespace Renderer {
 	Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices, std::vector<Texture>& textures)
 		: m_Vertices(vertices), m_Indices(indices), m_Textures(textures)
 	{
-		vertexArray = new VertexArray();
-		vertexBuffer = new VertexBuffer(m_Vertices);
-		indexBuffer = new IndexBuffer(m_Indices);
+		m_VertexArray = new VertexArray();
+		m_VertexBuffer = new VertexBuffer(m_Vertices);
+		m_IndexBuffer = new IndexBuffer(m_Indices);
+	}
 
-		vertexArray->AttachBuffer(*vertexBuffer);
+	Mesh::~Mesh()
+	{
+	}
+
+	void Mesh::Create()
+	{
+		m_VertexArray->Create();
+		m_VertexBuffer->Create();
+		m_IndexBuffer->Create();
+
+		m_VertexArray->AttachBuffer(*m_VertexBuffer);
+
+		// Initalize all the textures
+		for (unsigned int i = 0; i < m_Textures.size(); i++)
+		{
+			m_Textures[i].Create();
+		}
+	}
+
+	void Mesh::Destroy()
+	{
+		delete m_VertexArray;
+		delete m_VertexBuffer;
+		delete m_IndexBuffer;
+
+		// Destroy all textures
+		for (unsigned int i = 0; i < m_Textures.size(); i++)
+		{
+			m_Textures[i].Destroy();
+		}
 	}
 
 	void Mesh::Draw(Shader& shader)
 	{
-
 		shader.Bind();
-		vertexArray->Bind();
-		indexBuffer->Bind();
+		m_VertexArray->Bind();
+		m_IndexBuffer->Bind();
 
 		// Bind textures
 		std::string name;
@@ -32,7 +61,7 @@ namespace Renderer {
 
 		glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, 0);
 
-		vertexArray->Unbind();
+		m_VertexArray->Unbind();
 		shader.Unbind();
 	}
 

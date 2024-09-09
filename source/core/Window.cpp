@@ -7,8 +7,15 @@
 namespace Core {
 
     Window::Window(const char* title, int width, int height)
-        : m_Title(title),
-          m_Vsync(false)
+        : m_Title(title), m_Width(width), m_Height(height)
+    {
+    }
+
+    Window::~Window()
+    {
+    }
+
+    void Window::Create()
     {
         glfwInit();
 
@@ -16,7 +23,7 @@ namespace Core {
         glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 5);
         glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-        m_Window = glfwCreateWindow(width, height, title, NULL, NULL);
+        m_Window = glfwCreateWindow(m_Width, m_Height, m_Title, NULL, NULL);
 
         glfwMakeContextCurrent(m_Window);
         glfwSwapInterval(m_Vsync);
@@ -26,15 +33,15 @@ namespace Core {
         gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
         glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) {
-            Game::getInstance().Shutdown();
-        });
+            Game::getInstance().Destroy();
+            });
 
         glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
             glViewport(0, 0, width, height);
-        });
+            });
     }
 
-    Window::~Window()
+    void Window::Destroy()
     {
         if (m_Window != nullptr)
             glfwTerminate();

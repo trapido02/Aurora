@@ -26,8 +26,9 @@ namespace Core {
 		};
 
 		void Create();
+		void Destroy();
+
 		void Run();
-		void Shutdown();
 		void ProcessInput();
 	private:
 		Game() = default;
@@ -39,7 +40,6 @@ namespace Core {
 		Renderer::Renderer* m_Renderer = nullptr;
 		Renderer::Shader* m_Shader = nullptr;
 		Renderer::Camera* m_Camera = nullptr;
-
 		Renderer::Model* m_Model = nullptr;
 	};
 

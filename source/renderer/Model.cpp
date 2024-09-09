@@ -5,9 +5,18 @@
 namespace Renderer {
 
 	Model::Model(std::string modelPath)
+		: m_ModelPath(modelPath)
+	{
+	}
+
+	Model::~Model()
+	{
+	}
+
+	void Model::Create()
 	{
 		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+		const aiScene* scene = importer.ReadFile(m_ModelPath, aiProcess_Triangulate | aiProcess_GenSmoothNormals | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
@@ -15,9 +24,18 @@ namespace Renderer {
 			return;
 		}
 
-		m_Directory = modelPath.substr(0, modelPath.find_last_of("/"));
+		m_Directory = m_ModelPath.substr(0, m_ModelPath.find_last_of("/"));
 
 		ProcessNode(scene->mRootNode, scene);
+	}
+
+	void Model::Destroy()
+	{
+		// Destroy all meshes
+		for (unsigned int i = 0; i < m_Meshes.size(); i++)
+		{
+			m_Meshes[i].Destroy();
+		}
 	}
 
 	void Model::Draw(Shader& shader)
@@ -84,8 +102,12 @@ namespace Renderer {
 
 		std::vector<Texture> diffuseMaps = LoadMaterialTextures(material, aiTextureType_DIFFUSE, "texture");
 		textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+		
+		// Create the final mesh with all vertices, indices and textures and run its Create method
+		Mesh finalMesh(vertices, indices, textures);
+		finalMesh.Create();
 
-		return Mesh(vertices, indices, textures);
+		return finalMesh;
 	}
 
 	std::vector<Texture> Model::LoadMaterialTextures(aiMaterial* mat, aiTextureType type, std::string typeName)
@@ -97,7 +119,6 @@ namespace Renderer {
 			mat->GetTexture(type, i, &str);
 			Texture texture(m_Directory + "/" + str.C_Str());
 			textures.push_back(texture);
-			textures_loaded.push_back(texture);
 		}
 		return textures;
 	}

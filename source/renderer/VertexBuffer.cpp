@@ -7,14 +7,23 @@
 namespace Renderer {
 
 	VertexBuffer::VertexBuffer(std::vector<Vertex> vertices)
+		: m_Vertices(vertices)
 	{
-		glGenBuffers(1, &m_VertexBufferID);
-		Bind();
-		glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
-		Unbind();
 	}
 
 	VertexBuffer::~VertexBuffer()
+	{
+	}
+
+	void VertexBuffer::Create()
+	{
+		glGenBuffers(1, &m_VertexBufferID);
+		Bind();
+		glBufferData(GL_ARRAY_BUFFER, m_Vertices.size() * sizeof(Vertex), m_Vertices.data(), GL_STATIC_DRAW);
+		Unbind();
+	}
+
+	void VertexBuffer::Destroy()
 	{
 		glDeleteBuffers(1, &m_VertexBufferID);
 	}
