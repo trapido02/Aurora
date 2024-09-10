@@ -29,7 +29,8 @@ namespace Renderer {
 			projection = glm::perspective(glm::radians(m_Fov), (float)windowWidth / (float)windowHeight, m_NearPlane, m_FarPlane);
 
 			shader.Bind();
-			shader.SetUniformMatrix4fv("mvp", projection * view);
+			shader.SetUniformMatrix4fv("view", view);
+			shader.SetUniformMatrix4fv("projection", projection);
 			shader.Unbind();
 		}
 	}
