@@ -22,7 +22,8 @@ project "Aurora"
 		"vendor/glad/include",
 		"vendor/stb_image",
 		"vendor/assimp/include",
-		"vendor/glm"
+		"vendor/glm",
+		"vendor/spdlog/include"
 	}
 
 	libdirs

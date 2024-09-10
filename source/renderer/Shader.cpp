@@ -52,7 +52,8 @@ namespace Renderer {
 		}
 		catch (std::ifstream::failure& e)
 		{
-			std::cerr << "SHADER_LOADING_ERROR: " << e.what() << std::endl;
+			std::string error = "SHADER_LOADING_ERROR: " + std::string(e.what());
+			ERROR(error);
 		};
 
 		const char* vertexShaderSource = vertexShaderSourceString.c_str();
@@ -73,13 +74,16 @@ namespace Renderer {
 		int fragmentSuccess;
 		glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &vertexSuccess);
 		glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &fragmentSuccess);
+
 		if (!vertexSuccess)
 		{
 			int length;
 			glGetShaderiv(vertexShader, GL_INFO_LOG_LENGTH, &length);
 			char* message = (char*)_malloca(length * sizeof(char));
 			glGetShaderInfoLog(vertexShader, length, &length, message);
-			std::cerr << "VERTEX_SHADER_COMPILATION_ERROR:\n" << message << std::endl;
+
+			std::string error = "VERTEX_SHADER_COMPILATION_ERROR: " + (message ? std::string(message) : "");
+			ERROR(error);
 		}
 		if (!fragmentSuccess)
 		{
@@ -87,7 +91,9 @@ namespace Renderer {
 			glGetShaderiv(fragmentShader, GL_INFO_LOG_LENGTH, &length);
 			char* message = (char*)_malloca(length * sizeof(char));
 			glGetShaderInfoLog(fragmentShader, length, &length, message);
-			std::cerr << "FRAGMENT_SHADER_COMPILATION_ERROR:\n" << message << std::endl;
+
+			std::string error = "FRAGMENT_SHADER_COMPILATION_ERROR: " + (message ? std::string(message) : "");
+			ERROR(error);
 		}
 
 		// Link shaders

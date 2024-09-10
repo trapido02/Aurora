@@ -10,6 +10,7 @@
 #include "renderer/Mesh.h"
 #include "renderer/Camera.h"
 #include "Window.h"
+#include "Log.h"
 
 #include <memory>
 
@@ -43,6 +44,8 @@ namespace Core {
 		Renderer::Shader* m_Shader = nullptr;
 		Renderer::Camera* m_Camera = nullptr;
 		Renderer::Model* m_Model = nullptr;
+
+		Log* m_Logger = nullptr;
 	};
 
 }

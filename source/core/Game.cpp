@@ -16,9 +16,14 @@ void GLAPIENTRY MessageCallback(
 	const GLchar* message,
 	const void* userParam)
 {
-	fprintf(stderr, "GL CALLBACK: %s type = 0x%x, severity = 0x%x, message = %s\n",
-		(type == GL_DEBUG_TYPE_ERROR ? "** GL ERROR **" : ""),
-		type, severity, message);
+	if (severity == GL_DEBUG_SEVERITY_NOTIFICATION)
+		INFO(message);
+	if (severity == GL_DEBUG_SEVERITY_LOW)
+		WARN(message);
+	if (severity == GL_DEBUG_SEVERITY_MEDIUM)
+		WARN(message);
+	if (severity == GL_DEBUG_SEVERITY_HIGH)
+		ERROR(message);
 }
 
 namespace Core {
@@ -28,6 +33,10 @@ namespace Core {
 		m_Window = new Window("Aurora", 720 * 16 / 9, 720);
 		m_Window->Create();
 		m_Window->SetVsync(true);
+
+		// Setup logger
+		m_Logger = new Log();
+		m_Logger->Create();
 	}
 
 	void Game::Run()
@@ -81,6 +90,8 @@ namespace Core {
 		delete m_Shader;
 		delete m_Camera;
 		delete m_Model;
+
+		delete m_Logger;
 	}
 
 	void Game::ProcessInput()

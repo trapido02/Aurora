@@ -20,7 +20,8 @@ namespace Renderer {
 
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
 		{
-			std::cerr << "ASSIMP ERROR: " << importer.GetErrorString() << std::endl;
+			std::string error = "ASSIMP ERROR: " + std::string(importer.GetErrorString());
+			ERROR(error);
 			return;
 		}
 

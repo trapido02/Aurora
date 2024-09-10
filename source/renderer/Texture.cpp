@@ -40,6 +40,7 @@ namespace Renderer {
 		}
 		else
 		{
+			ERROR("Failed to load texture.");
 			std::cerr << "Failed to load texture" << std::endl;
 		}
 		stbi_image_free(data);
