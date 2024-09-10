@@ -4,9 +4,9 @@
 
 int main()
 {
-    Core::Game& game = Core::Game::getInstance();
-    game.Create();
-    game.Run();
+	Core::Game& game = Core::Game::getInstance();
+	game.Create();
+	game.Run();
 
-    return 0;
+	return 0;
 }
