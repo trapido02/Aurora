@@ -38,7 +38,7 @@ namespace Core {
 
 		m_Shader = new Renderer::Shader("resources/shaders/shader.vert", "resources/shaders/shader.frag");
 		m_Camera = new Renderer::Camera(m_Window, glm::vec3(0.0f, 0.0f, 3.0f), 60.0f, 0.1f, 100.0f);
-		m_Model = new Renderer::Model("resources/models/Suzanne.gltf");
+		m_Model = new Renderer::Model("resources/models/Duck.gltf");
 
 		m_Shader->Create();
 		m_Model->Create();
