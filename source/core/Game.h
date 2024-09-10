@@ -37,6 +37,8 @@ namespace Core {
 		Window* m_Window = nullptr;
 		bool m_IsRunning = true;
 
+		bool m_WireframeMode = false;
+
 		Renderer::Renderer* m_Renderer = nullptr;
 		Renderer::Shader* m_Shader = nullptr;
 		Renderer::Camera* m_Camera = nullptr;

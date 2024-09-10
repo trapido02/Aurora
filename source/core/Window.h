@@ -11,6 +11,7 @@ namespace Core {
 		A = GLFW_KEY_A,
 		S = GLFW_KEY_S,
 		D = GLFW_KEY_D,
+		E = GLFW_KEY_E
 	};
 
 	class Window
@@ -25,7 +26,7 @@ namespace Core {
 		void OnUpdate();
 		void SetVsync(bool state);
 
-		bool GetKeyDown(KEYCODE keycode);
+		bool GetKeyDown(KEYCODE keycode, bool once = false);
 		void GetMousePosition(double& x, double& y);
 		void GetSize(int& width, int& height);
 
@@ -39,6 +40,8 @@ namespace Core {
 
 		double m_PreviousTime = glfwGetTime();
 		int m_FrameCount = 0;
+
+		bool m_KeyState[GLFW_KEY_LAST + 1] = { false }; // To track the state of each key
 	};
 
 }

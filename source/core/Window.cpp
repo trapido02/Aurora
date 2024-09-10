@@ -73,10 +73,28 @@ namespace Core {
         m_Vsync = state;
     }
 
-    bool Window::GetKeyDown(KEYCODE keycode)
+    bool Window::GetKeyDown(KEYCODE keycode, bool once)
     {
-        if (glfwGetKey(m_Window, (int)keycode) == GLFW_PRESS) {
-            return true;
+        int key = glfwGetKey(m_Window, (int)keycode);
+        if (once)
+        {
+            bool isPressed = (key == GLFW_PRESS);
+
+            if (isPressed && !m_KeyState[(int)keycode])
+            {
+                m_KeyState[(int)keycode] = true;
+                return true;
+            }
+            else if (!isPressed)
+            {
+                m_KeyState[(int)keycode] = false;
+            }
+
+            return false;
+        }
+        else
+        {
+            return key == GLFW_PRESS;
         }
     }
 

@@ -34,6 +34,8 @@ namespace Core {
 	{
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_DEBUG_OUTPUT);
+		glEnable(GL_CULL_FACE);
+
 		glDebugMessageCallback(MessageCallback, 0);
 
 		m_Shader = new Renderer::Shader("resources/shaders/shader.vert", "resources/shaders/shader.frag");
@@ -86,6 +88,19 @@ namespace Core {
 		if (m_Window->GetKeyDown(Core::KEYCODE::ESCAPE))
 		{
 			Game::Destroy();
+		}
+		if (m_Window->GetKeyDown(Core::KEYCODE::E, true))
+		{
+			if (!m_WireframeMode)
+			{
+				m_WireframeMode = true;
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			}
+			else
+			{
+				m_WireframeMode = false;
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			}
 		}
 	}
 
