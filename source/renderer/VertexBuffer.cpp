@@ -17,10 +17,8 @@ namespace Renderer {
 
 	void VertexBuffer::Create()
 	{
-		glGenBuffers(1, &m_VertexBufferID);
-		Bind();
-		glBufferData(GL_ARRAY_BUFFER, m_Vertices.size() * sizeof(Vertex), m_Vertices.data(), GL_STATIC_DRAW);
-		Unbind();
+		glCreateBuffers(1, &m_VertexBufferID);  // Replaces glGenBuffers
+		glNamedBufferData(m_VertexBufferID, m_Vertices.size() * sizeof(Vertex), m_Vertices.data(), GL_STATIC_DRAW);  // Replaces glBufferData
 	}
 
 	void VertexBuffer::Destroy()
@@ -35,7 +33,12 @@ namespace Renderer {
 
 	void VertexBuffer::Unbind()
 	{
-		glBindBuffer(GL_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ARRAY_BUFFER, NULL);
+	}
+
+	unsigned int VertexBuffer::GetID()
+	{
+		return m_VertexBufferID;
 	}
 
 }

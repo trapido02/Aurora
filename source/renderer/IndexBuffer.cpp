@@ -17,10 +17,8 @@ namespace Renderer {
 
 	void IndexBuffer::Create()
 	{
-		glGenBuffers(1, &m_IndexBufferID);
-		Bind();
-		glBufferData(GL_ELEMENT_ARRAY_BUFFER, m_Indices.size() * sizeof(unsigned int), m_Indices.data(), GL_STATIC_DRAW);
-		Unbind();
+		glCreateBuffers(1, &m_IndexBufferID);  // Replaces glGenBuffers
+		glNamedBufferData(m_IndexBufferID, m_Indices.size() * sizeof(unsigned int), m_Indices.data(), GL_STATIC_DRAW);  // Replaces glBufferData
 	}
 
 	void IndexBuffer::Destroy()
@@ -35,7 +33,12 @@ namespace Renderer {
 
 	void IndexBuffer::Unbind()
 	{
-		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
+		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, NULL);
+	}
+
+	unsigned int IndexBuffer::GetID()
+	{
+		return m_IndexBufferID;
 	}
 
 }

@@ -22,7 +22,8 @@ namespace Renderer {
 		m_VertexBuffer->Create();
 		m_IndexBuffer->Create();
 
-		m_VertexArray->AttachBuffer(*m_VertexBuffer);
+		m_VertexArray->AttachVertexBuffer(*m_VertexBuffer);
+		m_VertexArray->AttachIndexBuffer(*m_IndexBuffer);
 
 		// Initalize all the textures
 		for (unsigned int i = 0; i < m_Textures.size(); i++)
@@ -48,18 +49,17 @@ namespace Renderer {
 	{
 		shader.Bind();
 		m_VertexArray->Bind();
-		m_IndexBuffer->Bind();
 
-		// Bind textures
+		// Set active texture
 		std::string name;
 		for (unsigned int i = 0; i < m_Textures.size(); i++)
 		{
 			name = "texture" + std::to_string(i + 1);
 			shader.SetUniform1i((GLchar*)name.c_str(), i);
-			m_Textures[i].Bind(i);
+			m_Textures[i].SetActiveTexture(i);
 		}
 
-		glDrawElements(GL_TRIANGLES, m_Indices.size(), GL_UNSIGNED_INT, 0);
+		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(m_Indices.size()), GL_UNSIGNED_INT, nullptr);
 
 		m_VertexArray->Unbind();
 		shader.Unbind();

@@ -16,7 +16,7 @@ namespace Renderer {
 
 	void VertexArray::Create()
 	{
-		glGenVertexArrays(1, &m_VertexArrayID);
+		glCreateVertexArrays(1, &m_VertexArrayID);
 	}
 
 	void VertexArray::Destroy()
@@ -24,19 +24,22 @@ namespace Renderer {
 		glDeleteVertexArrays(1, &m_VertexArrayID);
 	}
 
-	void VertexArray::AttachBuffer(VertexBuffer& vertexBuffer)
+	void VertexArray::AttachVertexBuffer(VertexBuffer& vertexBuffer)
 	{
-		Bind();
-		vertexBuffer.Bind();
+		glVertexArrayVertexBuffer(m_VertexArrayID, 0, vertexBuffer.GetID(), 0, sizeof(Vertex));
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, position));
-		glEnableVertexAttribArray(0);
+		glVertexArrayAttribFormat(m_VertexArrayID, 0, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, position));
+		glVertexArrayAttribBinding(m_VertexArrayID, 0, 0);
+		glEnableVertexArrayAttrib(m_VertexArrayID, 0);
 
-		glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
-		glEnableVertexAttribArray(1);
+		glVertexArrayAttribFormat(m_VertexArrayID, 1, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, texCoord));
+		glVertexArrayAttribBinding(m_VertexArrayID, 1, 0);
+		glEnableVertexArrayAttrib(m_VertexArrayID, 1);
+	}
 
-		vertexBuffer.Unbind();
-		Unbind();
+	void VertexArray::AttachIndexBuffer(IndexBuffer& indexBuffer)
+	{
+		glVertexArrayElementBuffer(m_VertexArrayID, indexBuffer.GetID());
 	}
 
 	void VertexArray::Bind()
@@ -46,7 +49,12 @@ namespace Renderer {
 
 	void VertexArray::Unbind()
 	{
-		glBindVertexArray(0);
+		glBindVertexArray(NULL);
+	}
+
+	unsigned int VertexArray::GetID()
+	{
+		return m_VertexArrayID;
 	}
 
 }

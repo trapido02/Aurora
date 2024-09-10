@@ -22,6 +22,8 @@ namespace Renderer {
 
 		void Bind();
 		void Unbind();
+
+		unsigned int GetID();
 	private:
 		unsigned int m_VertexBufferID = NULL;
 		std::vector<Vertex> m_Vertices;
