@@ -28,6 +28,7 @@ namespace Core {
         glfwMakeContextCurrent(m_Window);
         glfwSwapInterval(m_Vsync);
         glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+        glfwSetCursorPos(m_Window, m_Width / 2, m_Height / 2);
 
         // Load glad, should maybe be removed since this window class should ONLY handle the window, and not glad really.
         gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
