@@ -58,9 +58,6 @@ namespace Core {
 		m_Shader->Create();
 		m_Model->Create();
 
-		// Scale the model
-		m_Model->SetScale(glm::vec3(1.0f, 1.0f, 1.0f));
-
 		float timeSinceLastFrame = 0.0f;
 
 		while (m_IsRunning)
@@ -76,6 +73,8 @@ namespace Core {
 
 			m_Camera->Update(deltaTime, *m_Shader);
 
+			// Scale the model and draw it
+			m_Model->SetScale(m_ModelSize);
 			m_Model->Draw(*m_Shader);
 
 			Game::ImGuiRender();
@@ -104,7 +103,10 @@ namespace Core {
 
 	void Game::ImGuiRender()
 	{
-		ImGui::Text("Hello, world!");
+		std::stringstream ss;
+		ss << "FPS: " << m_Window->GetFPS();
+		ImGui::Text(ss.str().c_str());
+		ImGui::DragFloat3("Size", &m_ModelSize.x, 0.1f, 0.1f, 10.0f);
 	}
 
 	void Game::ProcessInput()

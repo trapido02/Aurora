@@ -37,6 +37,7 @@ namespace Core {
 		void LockMouseCursor();
 		void UnlockMouseCursor();
 		bool IsMouseLocked() { return m_MouseLocked; }
+		float GetFPS() { return m_FPS; }
 	private:
 		GLFWwindow* m_Window = nullptr;
 
@@ -48,6 +49,7 @@ namespace Core {
 
 		double m_PreviousTime = glfwGetTime();
 		int m_FrameCount = 0;
+		int m_FPS = 0;
 
 		bool m_KeyState[GLFW_KEY_LAST + 1] = { false }; // To track the state of each key
 	};

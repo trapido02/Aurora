@@ -41,6 +41,8 @@ namespace Core {
 
 		bool m_WireframeMode = false;
 
+		glm::vec3 m_ModelSize = glm::vec3(1.0f, 1.0f, 1.0f);
+
 		Renderer::Renderer* m_Renderer = nullptr;
 		Renderer::Shader* m_Shader = nullptr;
 		Renderer::Camera* m_Camera = nullptr;
