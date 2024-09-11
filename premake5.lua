@@ -13,7 +13,14 @@ project "Aurora"
 	pchheader "pch.h"
 	pchsource "source/pch.cpp"
 
-	files { "source/**.h", "source/**.cpp", "vendor/glad/src/glad.c", "vendor/stb_image/stb_image/stb_image.cpp" }
+	files
+	{
+		"source/**.h",
+		"source/**.cpp",
+		"vendor/glad/src/glad.c",
+		"vendor/stb_image/stb_image/stb_image.cpp",
+		"vendor/imgui/**.cpp"
+	}
 
 	includedirs
 	{
@@ -23,7 +30,8 @@ project "Aurora"
 		"vendor/stb_image",
 		"vendor/assimp/include",
 		"vendor/glm",
-		"vendor/spdlog/include"
+		"vendor/spdlog/include",
+		"vendor/imgui"
 	}
 
 	libdirs

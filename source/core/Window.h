@@ -23,7 +23,8 @@ namespace Core {
 		void Create();
 		void Destroy();
 
-		void OnUpdate();
+		void PreUpdate();
+		void PostUpdate();
 		void SetVsync(bool state);
 
 		bool GetKeyDown(KEYCODE keycode, bool once = false);

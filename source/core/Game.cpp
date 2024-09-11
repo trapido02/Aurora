@@ -7,6 +7,10 @@
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
+
 void GLAPIENTRY MessageCallback(
 	GLenum source,
 	GLenum type,
@@ -68,11 +72,15 @@ namespace Core {
 			m_Renderer->Clear();
 			m_Renderer->ClearColor(0.1f, 0.3f, 0.2f, 1.0f);
 
+			m_Window->PreUpdate();
+
 			m_Camera->Update(deltaTime, *m_Shader);
 
 			m_Model->Draw(*m_Shader);
 
-			m_Window->OnUpdate();
+			Game::ImGuiRender();
+
+			m_Window->PostUpdate();
 			Game::ProcessInput();
 		}
 	}
@@ -92,6 +100,11 @@ namespace Core {
 		delete m_Model;
 
 		delete m_Logger;
+	}
+
+	void Game::ImGuiRender()
+	{
+		ImGui::Text("Hello, world!");
 	}
 
 	void Game::ProcessInput()

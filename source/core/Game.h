@@ -30,6 +30,7 @@ namespace Core {
 		void Destroy();
 
 		void Run();
+		void ImGuiRender();
 		void ProcessInput();
 	private:
 		Game() = default;

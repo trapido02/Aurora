@@ -4,6 +4,10 @@
 #include "Window.h"
 #include "Game.h"
 
+#include "imgui/imgui.h"
+#include "imgui/imgui_impl_glfw.h"
+#include "imgui/imgui_impl_opengl3.h"
+
 namespace Core {
 
 	Window::Window(const char* title, int width, int height)
@@ -40,15 +44,32 @@ namespace Core {
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
 			glViewport(0, 0, width, height);
 			});
+
+		// Load ImGui
+		ImGui::CreateContext();
+		ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
+		ImGui_ImplOpenGL3_Init("#version 450");
+		ImGui::StyleColorsDark();
 	}
 
 	void Window::Destroy()
 	{
+		ImGui_ImplOpenGL3_Shutdown();
+		ImGui_ImplGlfw_Shutdown();
+		ImGui::DestroyContext();
+
 		if (m_Window != nullptr)
 			glfwTerminate();
 	}
 
-	void Window::OnUpdate()
+	void Window::PreUpdate()
+	{
+		ImGui_ImplOpenGL3_NewFrame();
+		ImGui_ImplGlfw_NewFrame();
+		ImGui::NewFrame();
+	}
+
+	void Window::PostUpdate()
 	{
 		// Update FPS
 		double currentTime = glfwGetTime();
@@ -63,6 +84,9 @@ namespace Core {
 			m_FrameCount = 0;
 			m_PreviousTime = currentTime;
 		}
+
+		ImGui::Render();
+		ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 		glfwSwapBuffers(m_Window);
 		glfwPollEvents();

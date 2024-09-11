@@ -3,6 +3,8 @@ bin/
 obj/
 .vs/
 
+*imgui.ini
+
 *.sln
 *.vcxproj
 *.vcxproj.filters
