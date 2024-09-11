@@ -15,7 +15,10 @@ namespace Renderer {
 	void Camera::Update(float deltaTime, Shader& shader)
 	{
 		ProcessInput(deltaTime);
-		ProcessMouse();
+		if (m_Window->IsMouseLocked())
+		{
+			ProcessMouse();
+		}
 		
 		glm::mat4 view = glm::mat4(1.0f);
 		glm::mat4 projection = glm::mat4(1.0f);
@@ -54,6 +57,18 @@ namespace Renderer {
 		if (m_Window->GetKeyDown(Core::KEYCODE::A))
 		{
 			m_Position -= velocity * glm::normalize(glm::cross(m_Orientation, m_Up));
+		}
+
+		if (m_Window->GetKeyDown(Core::KEYCODE::F, true))
+		{
+			if (!m_Window->IsMouseLocked())
+			{
+				m_Window->LockMouseCursor();
+			}
+			else
+			{
+				m_Window->UnlockMouseCursor();
+			}
 		}
 	}
 

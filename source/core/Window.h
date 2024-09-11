@@ -11,7 +11,8 @@ namespace Core {
 		A = GLFW_KEY_A,
 		S = GLFW_KEY_S,
 		D = GLFW_KEY_D,
-		E = GLFW_KEY_E
+		E = GLFW_KEY_E,
+		F = GLFW_KEY_F
 	};
 
 	class Window
@@ -32,12 +33,18 @@ namespace Core {
 		void GetSize(int& width, int& height);
 
 		void SetCursorPosition(double x, double y);
+
+		void LockMouseCursor();
+		void UnlockMouseCursor();
+		bool IsMouseLocked() { return m_MouseLocked; }
 	private:
 		GLFWwindow* m_Window = nullptr;
 
 		const char* m_Title;
 		int m_Width, m_Height;
+
 		bool m_Vsync = false;
+		bool m_MouseLocked = true;
 
 		double m_PreviousTime = glfwGetTime();
 		int m_FrameCount = 0;

@@ -137,4 +137,21 @@ namespace Core {
 		glfwSetCursorPos(m_Window, x, y);
 	}
 
+	void Window::LockMouseCursor()
+	{
+		m_MouseLocked = true;
+		glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+		// Prevent the camera from snapping when you lock your cursor
+		int windowWidth, windowHeight;
+		Window::GetSize(windowWidth, windowHeight);
+		Window::SetCursorPosition(((float)windowWidth / 2), ((float)windowHeight / 2));
+	}
+
+	void Window::UnlockMouseCursor()
+	{
+		m_MouseLocked = false;
+		glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	}
+
 }
