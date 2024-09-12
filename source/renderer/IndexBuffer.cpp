@@ -17,8 +17,8 @@ namespace Renderer {
 
 	void IndexBuffer::Create()
 	{
-		glCreateBuffers(1, &m_IndexBufferID);  // Replaces glGenBuffers
-		glNamedBufferData(m_IndexBufferID, m_Indices.size() * sizeof(unsigned int), m_Indices.data(), GL_STATIC_DRAW);  // Replaces glBufferData
+		glCreateBuffers(1, &m_IndexBufferID);
+		glNamedBufferData(m_IndexBufferID, m_Indices.size() * sizeof(unsigned int), m_Indices.data(), GL_STATIC_DRAW);
 	}
 
 	void IndexBuffer::Destroy()
