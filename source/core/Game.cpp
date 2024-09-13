@@ -55,6 +55,9 @@ namespace Core {
 		m_Camera = new Renderer::Camera(m_Window, glm::vec3(0.0f, 0.0f, 3.0f), 60.0f, 0.1f, 100.0f);
 		m_Model = new Renderer::Model("resources/models/Duck.gltf");
 
+		m_AmbientLight = new Renderer::AmbientLight(*m_Shader);
+		m_DirectionalLight = new Renderer::DirectionalLight(*m_Shader);
+
 		m_Shader->Create();
 		m_Model->Create();
 
@@ -67,14 +70,25 @@ namespace Core {
 			timeSinceLastFrame = glfwGetTime();
 
 			m_Renderer->Clear();
-			m_Renderer->ClearColor(0.1f, 0.3f, 0.2f, 1.0f);
+			m_Renderer->ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 
 			m_Window->PreUpdate();
 
 			m_Camera->Update(deltaTime, *m_Shader);
 
+			// Update ambient light
+			m_AmbientLight->SetColor(m_AmbientLightColor);
+			m_AmbientLight->SetStrength(m_AmbientLightStrength);
+
+			// Update directional light
+			m_DirectionalLight->SetDirection(m_DirectionalLightDirection);
+			m_DirectionalLight->SetColor(m_DirectionalLightColor);
+			m_DirectionalLight->SetStrength(m_DirectionalLightStrength);
+
 			// Scale the model and draw it
 			m_Model->SetScale(m_ModelSize);
+			m_Model->SetPosition(m_ModelPosition);
+
 			m_Model->Draw(*m_Shader);
 
 			Game::ImGuiRender();
@@ -98,15 +112,39 @@ namespace Core {
 		delete m_Camera;
 		delete m_Model;
 
+		delete m_AmbientLight;
+		delete m_DirectionalLight;
+
 		delete m_Logger;
 	}
 
 	void Game::ImGuiRender()
 	{
-		std::stringstream ss;
-		ss << "FPS: " << m_Window->GetFPS();
-		ImGui::Text(ss.str().c_str());
 		ImGui::DragFloat3("Size", &m_ModelSize.x, 0.1f, 0.1f, 10.0f);
+		ImGui::DragFloat3("Position", &m_ModelPosition.x, 0.1f, -10000.0f, 10000.0f);
+
+		if (ImGui::CollapsingHeader("Ambient Light", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::PushID("AmbientLight");
+			ImGui::DragFloat3("Color", &m_AmbientLightColor.x, 0.1f, 0.0f, 1.0f);
+			ImGui::DragFloat("Strength", &m_AmbientLightStrength, 0.1f, 0.0f, 10.0f);
+			ImGui::PopID();
+		}
+
+		if (ImGui::CollapsingHeader("Directional Light", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			ImGui::PushID("DirectionalLight");
+			ImGui::DragFloat3("Direction", &m_DirectionalLightDirection.x, 0.1f, -1.0f, 1.0f);
+			ImGui::DragFloat3("Color", &m_DirectionalLightColor.x, 0.1f, 0.0f, 1.0f);
+			ImGui::DragFloat("Strength", &m_DirectionalLightStrength, 0.1f, 0.0f, 10.0f);
+			ImGui::PopID();
+		}
+
+		// Debug info
+		ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
+		ImGui::Text("Frame Time: %.3f ms", 1000.0f / ImGui::GetIO().Framerate);
+		ImGui::Separator();
+		ImGui::Text("OpenGL Version: %s", glGetString(GL_VERSION));
 	}
 
 	void Game::ProcessInput()

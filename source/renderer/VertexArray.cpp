@@ -35,6 +35,10 @@ namespace Renderer {
 		glVertexArrayAttribFormat(m_VertexArrayID, 1, 2, GL_FLOAT, GL_FALSE, offsetof(Vertex, texCoord));
 		glVertexArrayAttribBinding(m_VertexArrayID, 1, 0);
 		glEnableVertexArrayAttrib(m_VertexArrayID, 1);
+
+		glVertexArrayAttribFormat(m_VertexArrayID, 2, 3, GL_FLOAT, GL_FALSE, offsetof(Vertex, normal));
+		glVertexArrayAttribBinding(m_VertexArrayID, 2, 0);
+		glEnableVertexArrayAttrib(m_VertexArrayID, 2);
 	}
 
 	void VertexArray::AttachIndexBuffer(IndexBuffer& indexBuffer)

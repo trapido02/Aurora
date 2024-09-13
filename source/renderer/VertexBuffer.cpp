@@ -17,8 +17,8 @@ namespace Renderer {
 
 	void VertexBuffer::Create()
 	{
-		glCreateBuffers(1, &m_VertexBufferID);  // Replaces glGenBuffers
-		glNamedBufferData(m_VertexBufferID, m_Vertices.size() * sizeof(Vertex), m_Vertices.data(), GL_STATIC_DRAW);  // Replaces glBufferData
+		glCreateBuffers(1, &m_VertexBufferID);
+		glNamedBufferData(m_VertexBufferID, m_Vertices.size() * sizeof(Vertex), m_Vertices.data(), GL_STATIC_DRAW);
 	}
 
 	void VertexBuffer::Destroy()

@@ -22,6 +22,8 @@ namespace Renderer {
 		void Bind();
 		void Unbind();
 
+		void SetUniform1f(GLchar* name, float v1);
+		void SetUniform3f(GLchar* name, float v1, float v2, float v3);
 		void SetUniform4f(GLchar* name, float v1, float v2, float v3, float v4);
 		void SetUniform1i(GLchar* name, int v1);
 		void SetUniformMatrix4fv(GLchar* name, glm::mat4& value);

@@ -122,6 +122,18 @@ namespace Renderer {
 		glUseProgram(0);
 	}
 
+	void Shader::SetUniform1f(GLchar* name, float v1)
+	{
+		int uniformLocation = glGetUniformLocation(m_ShaderProgram, name);
+		glUniform1f(uniformLocation, v1);
+	}
+
+	void Shader::SetUniform3f(GLchar* name, float v1, float v2, float v3)
+	{
+		int uniformLocation = glGetUniformLocation(m_ShaderProgram, name);
+		glUniform3f(uniformLocation, v1, v2, v3);
+	}
+
 	void Shader::SetUniform4f(GLchar* name, float v1, float v2, float v3, float v4)
 	{
 		int uniformLocation = glGetUniformLocation(m_ShaderProgram, name);
