@@ -47,7 +47,7 @@ namespace Core {
 		glm::vec3 m_ModelPosition = glm::vec3(0.0f, 0.0f, 0.0f);
 
 		glm::vec3 m_AmbientLightColor = glm::vec3(1.0f, 1.0f, 1.0f);
-		float m_AmbientLightStrength = 1.0f;
+		float m_AmbientLightStrength = 0.1f;
 
 		glm::vec3 m_DirectionalLightDirection = glm::vec3(-0.5f, -1.0f, -0.5f);
 		glm::vec3 m_DirectionalLightColor = glm::vec3(1.0f, 1.0f, 1.0f);
