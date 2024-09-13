@@ -12,9 +12,8 @@ namespace Renderer {
 	{
 	}
 
-	void Camera::Update(float deltaTime, Shader& shader)
+	void Camera::Update(Shader& shader)
 	{
-		ProcessInput(deltaTime);
 		if (m_Window->IsMouseLocked())
 		{
 			ProcessMouse();
@@ -38,38 +37,28 @@ namespace Renderer {
 		}
 	}
 
-	void Camera::ProcessInput(float deltaTime)
+	void Camera::MoveForward(float deltaTime)
 	{
 		float velocity = m_Speed * deltaTime;
+		m_Position += velocity * m_Orientation;
+	}
 
-		if (m_Window->GetKeyDown(Core::KEYCODE::W))
-		{
-			m_Position += velocity * m_Orientation;
-		}
-		if (m_Window->GetKeyDown(Core::KEYCODE::S))
-		{
-			m_Position -= velocity * m_Orientation;
-		}
-		if (m_Window->GetKeyDown(Core::KEYCODE::D))
-		{
-			m_Position += velocity * glm::normalize(glm::cross(m_Orientation, m_Up));
-		}
-		if (m_Window->GetKeyDown(Core::KEYCODE::A))
-		{
-			m_Position -= velocity * glm::normalize(glm::cross(m_Orientation, m_Up));
-		}
+	void Camera::MoveBackward(float deltaTime)
+	{
+		float velocity = m_Speed * deltaTime;
+		m_Position -= velocity * m_Orientation;
+	}
 
-		if (m_Window->GetKeyDown(Core::KEYCODE::F, true))
-		{
-			if (!m_Window->IsMouseLocked())
-			{
-				m_Window->LockMouseCursor();
-			}
-			else
-			{
-				m_Window->UnlockMouseCursor();
-			}
-		}
+	void Camera::MoveLeft(float deltaTime)
+	{
+		float velocity = m_Speed * deltaTime;
+		m_Position -= velocity * glm::normalize(glm::cross(m_Orientation, m_Up));
+	}
+
+	void Camera::MoveRight(float deltaTime)
+	{
+		float velocity = m_Speed * deltaTime;
+		m_Position += velocity * glm::normalize(glm::cross(m_Orientation, m_Up));
 	}
 
 	void Camera::ProcessMouse()

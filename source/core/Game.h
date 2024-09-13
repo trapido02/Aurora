@@ -33,7 +33,7 @@ namespace Core {
 
 		void Run();
 		void ImGuiRender();
-		void ProcessInput();
+		void ProcessInput(float deltaTime);
 	private:
 		Game() = default;
 		~Game() = default;

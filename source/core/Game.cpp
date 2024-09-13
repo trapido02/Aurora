@@ -74,7 +74,7 @@ namespace Core {
 
 			m_Window->PreUpdate();
 
-			m_Camera->Update(deltaTime, *m_Shader);
+			m_Camera->Update(*m_Shader);
 
 			// Update ambient light
 			m_AmbientLight->SetColor(m_AmbientLightColor);
@@ -94,7 +94,7 @@ namespace Core {
 			Game::ImGuiRender();
 
 			m_Window->PostUpdate();
-			Game::ProcessInput();
+			Game::ProcessInput(deltaTime);
 		}
 	}
 
@@ -147,7 +147,7 @@ namespace Core {
 		ImGui::Text("OpenGL Version: %s", glGetString(GL_VERSION));
 	}
 
-	void Game::ProcessInput()
+	void Game::ProcessInput(float deltaTime)
 	{
 		if (m_Window->GetKeyDown(Core::KEYCODE::ESCAPE))
 		{
@@ -164,6 +164,37 @@ namespace Core {
 			{
 				m_WireframeMode = false;
 				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			}
+		}
+
+		// Move camera
+		if (m_Window->GetKeyDown(Core::KEYCODE::W))
+		{
+			m_Camera->MoveForward(deltaTime);
+		}
+		if (m_Window->GetKeyDown(Core::KEYCODE::S))
+		{
+			m_Camera->MoveBackward(deltaTime);
+		}
+		if (m_Window->GetKeyDown(Core::KEYCODE::A))
+		{
+			m_Camera->MoveLeft(deltaTime);
+		}
+		if (m_Window->GetKeyDown(Core::KEYCODE::D))
+		{
+			m_Camera->MoveRight(deltaTime);
+		}
+
+		// Unlock/lock mouse cursor
+		if (m_Window->GetKeyDown(Core::KEYCODE::F, true))
+		{
+			if (!m_Window->IsMouseLocked())
+			{
+				m_Window->LockMouseCursor();
+			}
+			else
+			{
+				m_Window->UnlockMouseCursor();
 			}
 		}
 	}

@@ -15,7 +15,12 @@ namespace Renderer {
 		Camera(Core::Window* window, glm::vec3 position, float fov, float nearPlane, float farPlane);
 		~Camera();
 
-		void Update(float deltaTime, Shader& shader);
+		void Update(Shader& shader);
+
+		void MoveForward(float deltaTime);
+		void MoveBackward(float deltaTime);
+		void MoveLeft(float deltaTime);
+		void MoveRight(float deltaTime);
 	private:
 		Core::Window* m_Window;
 
@@ -30,7 +35,6 @@ namespace Renderer {
 		glm::vec3 m_Orientation = glm::vec3(0.0f, 0.0f, -1.0f);
 		glm::vec3 m_Up = glm::vec3(0.0f, 1.0f, 0.0f);
 
-		void ProcessInput(float deltaTime);
 		void ProcessMouse();
 	};
 
