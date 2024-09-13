@@ -32,6 +32,8 @@ namespace Renderer {
 
 		const char* m_VertexShaderPath;
 		const char* m_FragmentShaderPath;
+
+		bool m_Success = true;
 	};
 
 }

@@ -54,6 +54,8 @@ namespace Renderer {
 		{
 			std::string error = "SHADER_LOADING_ERROR: " + std::string(e.what());
 			ERROR(error);
+			m_Success = false;
+			return;
 		};
 
 		const char* vertexShaderSource = vertexShaderSourceString.c_str();
@@ -84,6 +86,8 @@ namespace Renderer {
 
 			std::string error = "VERTEX_SHADER_COMPILATION_ERROR: " + (message ? std::string(message) : "");
 			ERROR(error);
+			m_Success = false;
+			return;
 		}
 		if (!fragmentSuccess)
 		{
@@ -94,6 +98,8 @@ namespace Renderer {
 
 			std::string error = "FRAGMENT_SHADER_COMPILATION_ERROR: " + (message ? std::string(message) : "");
 			ERROR(error);
+			m_Success = false;
+			return;
 		}
 
 		// Link shaders
@@ -114,42 +120,63 @@ namespace Renderer {
 
 	void Shader::Bind()
 	{
-		glUseProgram(m_ShaderProgram);
+		if (m_Success)
+		{
+			glUseProgram(m_ShaderProgram);
+		}
 	}
 
 	void Shader::Unbind()
 	{
-		glUseProgram(0);
+		if (m_Success)
+		{
+			glUseProgram(0);
+		}
 	}
 
 	void Shader::SetUniform1f(GLchar* name, float v1)
 	{
-		int uniformLocation = glGetUniformLocation(m_ShaderProgram, name);
-		glUniform1f(uniformLocation, v1);
+		if (m_Success)
+		{
+			int uniformLocation = glGetUniformLocation(m_ShaderProgram, name);
+			glUniform1f(uniformLocation, v1);
+		}
 	}
 
 	void Shader::SetUniform3f(GLchar* name, float v1, float v2, float v3)
 	{
-		int uniformLocation = glGetUniformLocation(m_ShaderProgram, name);
-		glUniform3f(uniformLocation, v1, v2, v3);
+		if (m_Success)
+		{
+			int uniformLocation = glGetUniformLocation(m_ShaderProgram, name);
+			glUniform3f(uniformLocation, v1, v2, v3);
+		}
 	}
 
 	void Shader::SetUniform4f(GLchar* name, float v1, float v2, float v3, float v4)
 	{
-		int uniformLocation = glGetUniformLocation(m_ShaderProgram, name);
-		glUniform4f(uniformLocation, v1, v2, v3, v4);
+		if (m_Success)
+		{
+			int uniformLocation = glGetUniformLocation(m_ShaderProgram, name);
+			glUniform4f(uniformLocation, v1, v2, v3, v4);
+		}
 	}
 
 	void Shader::SetUniform1i(GLchar* name, int v1)
 	{
-		int uniformLocation = glGetUniformLocation(m_ShaderProgram, name);
-		glUniform1i(uniformLocation, v1);
+		if (m_Success)
+		{
+			int uniformLocation = glGetUniformLocation(m_ShaderProgram, name);
+			glUniform1i(uniformLocation, v1);
+		}
 	}
 
 	void Shader::SetUniformMatrix4fv(GLchar* name, glm::mat4& value)
 	{
-		int uniformLocation = glGetUniformLocation(m_ShaderProgram, name);
-		glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &value[0][0]);
+		if (m_Success)
+		{
+			int uniformLocation = glGetUniformLocation(m_ShaderProgram, name);
+			glUniformMatrix4fv(uniformLocation, 1, GL_FALSE, &value[0][0]);
+		}
 	}
 
 }
