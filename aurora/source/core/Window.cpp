@@ -2,7 +2,6 @@
 
 #include <glad/glad.h>
 #include "Window.h"
-#include "Game.h"
 
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
@@ -37,9 +36,8 @@ namespace Core {
 		// Load glad, should maybe be removed since this window class should ONLY handle the window, and not glad really.
 		gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
-		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) {
-			Game::getInstance().Destroy();
-			});
+		// To be fixed!!!
+		// glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) { });
 
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
 			glViewport(0, 0, width, height);
