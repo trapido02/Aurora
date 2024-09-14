@@ -2,6 +2,7 @@ project "editor"
 	kind "ConsoleApp"
 	language "C++"
 	targetdir "../bin/%{cfg.buildcfg}"
+	cppdialect "C++20"
 
 	files
 	{

@@ -2,6 +2,7 @@ project "aurora"
 	kind "StaticLib"
 	language "C++"
 	targetdir "../bin/%{cfg.buildcfg}"
+	cppdialect "C++20"
 
 	pchheader "pch.h"
 	pchsource "source/pch.cpp"
