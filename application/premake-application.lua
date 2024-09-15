@@ -1,4 +1,4 @@
-project "editor"
+project "application"
 	kind "ConsoleApp"
 	language "C++"
 	targetdir "../bin/%{cfg.buildcfg}"

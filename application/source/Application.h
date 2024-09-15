@@ -4,13 +4,13 @@
 
 #include <memory>
 
-class Editor
+class Application
 {
 public:
 	// Get the singleton class instance
-	static Editor& getInstance()
+	static Application& getInstance()
 	{
-		static Editor instance;
+		static Application instance;
 		return instance;
 	};
 
@@ -21,8 +21,8 @@ public:
 	void ImGuiRender();
 	void ProcessInput(float deltaTime);
 private:
-	Editor() = default;
-	~Editor() = default;
+	Application() = default;
+	~Application() = default;
 
 	Aurora::Core::Window* m_Window = nullptr;
 	bool m_IsRunning = true;

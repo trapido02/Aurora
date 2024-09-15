@@ -9,4 +9,4 @@ workspace "Aurora"
 OutputDir = "%{cfg.system}-%{cfg.architecture}/%{cfg.buildcfg}"
 
 include "aurora/premake-aurora.lua"
-include "editor/premake-editor.lua"
+include "application/premake-application.lua"

@@ -1,4 +1,4 @@
-#include "Editor.h"
+#include "Application.h"
 
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
@@ -27,11 +27,11 @@ void GLAPIENTRY MessageCallback(
 		ERROR(message);
 }
 
-void Editor::Create()
+void Application::Create()
 {
 	m_Window = new Aurora::Core::Window("Aurora", 720 * 16 / 9, 720);
 	m_Window->Create();
-	m_Window->SetCloseCallback([this]() { Editor::Destroy(); });
+	m_Window->SetCloseCallback([this]() { Application::Destroy(); });
 	m_Window->SetVsync(true);
 
 	// Setup logger
@@ -39,7 +39,7 @@ void Editor::Create()
 	m_Logger->Create();
 }
 
-void Editor::Run()
+void Application::Run()
 {
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
@@ -87,14 +87,14 @@ void Editor::Run()
 
 		m_Model->Draw(*m_Shader);
 
-		Editor::ImGuiRender();
+		Application::ImGuiRender();
 
 		m_Window->PostUpdate();
-		Editor::ProcessInput(deltaTime);
+		Application::ProcessInput(deltaTime);
 	}
 }
 
-void Editor::Destroy()
+void Application::Destroy()
 {
 	m_IsRunning = false;
 
@@ -114,7 +114,7 @@ void Editor::Destroy()
 	delete m_Logger;
 }
 
-void Editor::ImGuiRender()
+void Application::ImGuiRender()
 {
 	ImGui::DragFloat3("Size", &m_ModelSize.x, 0.1f, 0.1f, 10.0f);
 	ImGui::DragFloat3("Position", &m_ModelPosition.x, 0.1f, -10000.0f, 10000.0f);
@@ -143,11 +143,11 @@ void Editor::ImGuiRender()
 	ImGui::Text("OpenGL Version: %s", glGetString(GL_VERSION));
 }
 
-void Editor::ProcessInput(float deltaTime)
+void Application::ProcessInput(float deltaTime)
 {
 	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::ESCAPE))
 	{
-		Editor::Destroy();
+		Application::Destroy();
 	}
 	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::E, true))
 	{
