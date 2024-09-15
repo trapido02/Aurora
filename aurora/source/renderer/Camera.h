@@ -7,7 +7,7 @@
 #include <gtx/rotate_vector.hpp>
 #include <gtx/vector_angle.hpp>
 
-namespace Renderer {
+namespace Aurora::Renderer {
 
 	class Camera
 	{

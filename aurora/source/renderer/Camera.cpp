@@ -2,7 +2,8 @@
 
 #include "Camera.h"
 
-namespace Renderer {
+namespace Aurora::Renderer {
+
 	Camera::Camera(Core::Window* window, glm::vec3 position, float fov, float nearPlane, float farPlane)
 		: m_Window(window), m_Position(position), m_Fov(fov), m_NearPlane(nearPlane), m_FarPlane(farPlane)
 	{

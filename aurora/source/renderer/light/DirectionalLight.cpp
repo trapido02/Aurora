@@ -2,7 +2,7 @@
 
 #include "DirectionalLight.h"
 
-namespace Renderer {
+namespace Aurora::Renderer {
 
 	DirectionalLight::DirectionalLight(Shader& shader)
 		: m_Shader(shader)

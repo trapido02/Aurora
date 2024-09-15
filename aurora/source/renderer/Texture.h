@@ -2,7 +2,7 @@
 
 #include <string>
 
-namespace Renderer {
+namespace Aurora::Renderer {
 
 	class Texture
 	{

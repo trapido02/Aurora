@@ -2,7 +2,7 @@
 
 #include "spdlog/spdlog.h"
 
-namespace Core {
+namespace Aurora::Core {
 
 	class Log
 	{

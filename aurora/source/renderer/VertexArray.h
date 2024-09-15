@@ -3,7 +3,7 @@
 #include "VertexBuffer.h"
 #include "IndexBuffer.h"
 
-namespace Renderer {
+namespace Aurora::Renderer {
 
 	class VertexArray
 	{

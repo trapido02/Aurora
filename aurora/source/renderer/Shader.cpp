@@ -2,7 +2,7 @@
 
 #include "Shader.h"
 
-namespace Renderer {
+namespace Aurora::Renderer {
 
 	Shader::Shader(const char* vertexShaderPath, const char* fragmentShaderPath)
 		: m_VertexShaderPath(vertexShaderPath), m_FragmentShaderPath(fragmentShaderPath)
@@ -134,7 +134,7 @@ namespace Renderer {
 		}
 	}
 
-	void Shader::SetUniform1f(GLchar* name, float v1)
+	void Shader::SetUniform1f(const char* name, float v1)
 	{
 		if (m_Success)
 		{
@@ -143,7 +143,7 @@ namespace Renderer {
 		}
 	}
 
-	void Shader::SetUniform3f(GLchar* name, float v1, float v2, float v3)
+	void Shader::SetUniform3f(const char* name, float v1, float v2, float v3)
 	{
 		if (m_Success)
 		{
@@ -152,7 +152,7 @@ namespace Renderer {
 		}
 	}
 
-	void Shader::SetUniform4f(GLchar* name, float v1, float v2, float v3, float v4)
+	void Shader::SetUniform4f(const char* name, float v1, float v2, float v3, float v4)
 	{
 		if (m_Success)
 		{
@@ -161,7 +161,7 @@ namespace Renderer {
 		}
 	}
 
-	void Shader::SetUniform1i(GLchar* name, int v1)
+	void Shader::SetUniform1i(const char* name, int v1)
 	{
 		if (m_Success)
 		{
@@ -170,7 +170,7 @@ namespace Renderer {
 		}
 	}
 
-	void Shader::SetUniformMatrix4fv(GLchar* name, glm::mat4& value)
+	void Shader::SetUniformMatrix4fv(const char* name, glm::mat4& value)
 	{
 		if (m_Success)
 		{

@@ -4,7 +4,7 @@
 
 #include "VertexArray.h"
 
-namespace Renderer {
+namespace Aurora::Renderer {
 
 	VertexArray::VertexArray()
 	{

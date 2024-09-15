@@ -7,7 +7,7 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 
-namespace Core {
+namespace Aurora::Core {
 
 	Window::Window(const char* title, int width, int height)
 		: m_Title(title), m_Width(width), m_Height(height)

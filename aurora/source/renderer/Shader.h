@@ -8,7 +8,7 @@
 #include <gtc/matrix_transform.hpp>
 #include <gtc/type_ptr.hpp>
 
-namespace Renderer {
+namespace Aurora::Renderer {
 
 	class Shader
 	{
@@ -22,11 +22,11 @@ namespace Renderer {
 		void Bind();
 		void Unbind();
 
-		void SetUniform1f(GLchar* name, float v1);
-		void SetUniform3f(GLchar* name, float v1, float v2, float v3);
-		void SetUniform4f(GLchar* name, float v1, float v2, float v3, float v4);
-		void SetUniform1i(GLchar* name, int v1);
-		void SetUniformMatrix4fv(GLchar* name, glm::mat4& value);
+		void SetUniform1f(const char* name, float v1);
+		void SetUniform3f(const char* name, float v1, float v2, float v3);
+		void SetUniform4f(const char* name, float v1, float v2, float v3, float v4);
+		void SetUniform1i(const char* name, int v1);
+		void SetUniformMatrix4fv(const char* name, glm::mat4& value);
 	private:
 		unsigned int m_ShaderProgram = NULL;
 

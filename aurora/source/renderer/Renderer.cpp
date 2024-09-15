@@ -2,7 +2,7 @@
 
 #include "Renderer.h"
 
-namespace Renderer {
+namespace Aurora::Renderer {
 
 	void Renderer::Clear()
 	{

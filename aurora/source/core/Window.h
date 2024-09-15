@@ -2,7 +2,7 @@
 
 #include <GLFW/glfw3.h>
 
-namespace Core {
+namespace Aurora::Core {
 
 	enum class KEYCODE
 	{

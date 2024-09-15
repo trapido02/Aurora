@@ -2,7 +2,7 @@
 
 #include <vector>
 
-namespace Renderer {
+namespace Aurora::Renderer {
 
 	class IndexBuffer
 	{

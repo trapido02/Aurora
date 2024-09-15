@@ -1,5 +1,7 @@
 #pragma once
 
+#include <imgui/imgui.h>
+
 #include "renderer/Shader.h"
 #include "renderer/Renderer.h"
 #include "renderer/VertexArray.h"

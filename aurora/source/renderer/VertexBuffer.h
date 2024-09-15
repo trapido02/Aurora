@@ -3,7 +3,7 @@
 #include <glm.hpp>
 #include <vector>
 
-namespace Renderer {
+namespace Aurora::Renderer {
 
 	struct Vertex
 	{

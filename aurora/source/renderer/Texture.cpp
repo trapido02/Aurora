@@ -6,7 +6,7 @@
 
 #include <stb_image/stb_image.h>
 
-namespace Renderer {
+namespace Aurora::Renderer {
 
 	Texture::Texture(std::string texturePath)
 		: m_TexturePath(texturePath)

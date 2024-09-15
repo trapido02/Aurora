@@ -4,7 +4,7 @@
 
 #include "VertexBuffer.h"
 
-namespace Renderer {
+namespace Aurora::Renderer {
 
 	VertexBuffer::VertexBuffer(std::vector<Vertex> vertices)
 		: m_Vertices(vertices)

@@ -2,7 +2,7 @@
 
 #include "Model.h"
 
-namespace Renderer {
+namespace Aurora::Renderer {
 
 	Model::Model(std::string modelPath)
 		: m_ModelPath(modelPath)

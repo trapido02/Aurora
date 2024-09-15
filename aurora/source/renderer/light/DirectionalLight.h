@@ -3,7 +3,7 @@
 #include <glm.hpp>
 #include "../Shader.h"
 
-namespace Renderer {
+namespace Aurora::Renderer {
 
 	class DirectionalLight
 	{

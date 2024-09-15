@@ -4,7 +4,7 @@
 
 #include "IndexBuffer.h"
 
-namespace Renderer {
+namespace Aurora::Renderer {
 
 	IndexBuffer::IndexBuffer(std::vector<unsigned int> indices)
 		: m_IndexBufferID(NULL), m_Indices(indices)

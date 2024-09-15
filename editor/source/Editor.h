@@ -24,7 +24,7 @@ private:
 	Editor() = default;
 	~Editor() = default;
 
-	Core::Window* m_Window = nullptr;
+	Aurora::Core::Window* m_Window = nullptr;
 	bool m_IsRunning = true;
 
 	bool m_WireframeMode = false;
@@ -39,13 +39,13 @@ private:
 	glm::vec3 m_DirectionalLightColor = glm::vec3(1.0f, 1.0f, 1.0f);
 	float m_DirectionalLightStrength = 1.0f;
 
-	Renderer::Renderer* m_Renderer = nullptr;
-	Renderer::Shader* m_Shader = nullptr;
-	Renderer::Camera* m_Camera = nullptr;
-	Renderer::Model* m_Model = nullptr;
+	Aurora::Renderer::Renderer* m_Renderer = nullptr;
+	Aurora::Renderer::Shader* m_Shader = nullptr;
+	Aurora::Renderer::Camera* m_Camera = nullptr;
+	Aurora::Renderer::Model* m_Model = nullptr;
 
-	Renderer::AmbientLight* m_AmbientLight = nullptr;
-	Renderer::DirectionalLight* m_DirectionalLight = nullptr;
+	Aurora::Renderer::AmbientLight* m_AmbientLight = nullptr;
+	Aurora::Renderer::DirectionalLight* m_DirectionalLight = nullptr;
 
-	Core::Log* m_Logger = nullptr;
+	Aurora::Core::Log* m_Logger = nullptr;
 };

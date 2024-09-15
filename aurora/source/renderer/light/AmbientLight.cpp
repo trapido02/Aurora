@@ -2,7 +2,7 @@
 
 #include "AmbientLight.h"
 
-namespace Renderer {
+namespace Aurora::Renderer {
 
 	AmbientLight::AmbientLight(Shader& shader)
 		: m_Shader(shader)

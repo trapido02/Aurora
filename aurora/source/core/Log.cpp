@@ -5,7 +5,7 @@
 #include "spdlog/sinks/stdout_color_sinks.h"
 #include "spdlog/sinks/basic_file_sink.h"
 
-namespace Core {
+namespace Aurora::Core {
 
 	Log::Log(bool logToFile)
 		: m_LogToFile(logToFile)

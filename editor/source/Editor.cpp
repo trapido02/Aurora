@@ -29,12 +29,12 @@ void GLAPIENTRY MessageCallback(
 
 void Editor::Create()
 {
-	m_Window = new Core::Window("Aurora", 720 * 16 / 9, 720);
+	m_Window = new Aurora::Core::Window("Aurora", 720 * 16 / 9, 720);
 	m_Window->Create();
 	m_Window->SetVsync(true);
 
 	// Setup logger
-	m_Logger = new Core::Log();
+	m_Logger = new Aurora::Core::Log();
 	m_Logger->Create();
 }
 
@@ -46,12 +46,12 @@ void Editor::Run()
 
 	glDebugMessageCallback(MessageCallback, 0);
 
-	m_Shader = new Renderer::Shader("resources/shaders/shader.vert", "resources/shaders/shader.frag");
-	m_Camera = new Renderer::Camera(m_Window, glm::vec3(0.0f, 0.0f, 3.0f), 60.0f, 0.1f, 100.0f);
-	m_Model = new Renderer::Model("resources/models/Duck.gltf");
+	m_Shader = new Aurora::Renderer::Shader("resources/shaders/shader.vert", "resources/shaders/shader.frag");
+	m_Camera = new Aurora::Renderer::Camera(m_Window, glm::vec3(0.0f, 0.0f, 3.0f), 60.0f, 0.1f, 100.0f);
+	m_Model = new Aurora::Renderer::Model("resources/models/Duck.gltf");
 
-	m_AmbientLight = new Renderer::AmbientLight(*m_Shader);
-	m_DirectionalLight = new Renderer::DirectionalLight(*m_Shader);
+	m_AmbientLight = new Aurora::Renderer::AmbientLight(*m_Shader);
+	m_DirectionalLight = new Aurora::Renderer::DirectionalLight(*m_Shader);
 
 	m_Shader->Create();
 	m_Model->Create();
@@ -144,11 +144,11 @@ void Editor::ImGuiRender()
 
 void Editor::ProcessInput(float deltaTime)
 {
-	if (m_Window->GetKeyDown(Core::KEYCODE::ESCAPE))
+	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::ESCAPE))
 	{
 		Editor::Destroy();
 	}
-	if (m_Window->GetKeyDown(Core::KEYCODE::E, true))
+	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::E, true))
 	{
 		if (!m_WireframeMode)
 		{
@@ -163,25 +163,25 @@ void Editor::ProcessInput(float deltaTime)
 	}
 
 	// Move camera
-	if (m_Window->GetKeyDown(Core::KEYCODE::W))
+	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::W))
 	{
 		m_Camera->MoveForward(deltaTime);
 	}
-	if (m_Window->GetKeyDown(Core::KEYCODE::S))
+	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::S))
 	{
 		m_Camera->MoveBackward(deltaTime);
 	}
-	if (m_Window->GetKeyDown(Core::KEYCODE::A))
+	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::A))
 	{
 		m_Camera->MoveLeft(deltaTime);
 	}
-	if (m_Window->GetKeyDown(Core::KEYCODE::D))
+	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::D))
 	{
 		m_Camera->MoveRight(deltaTime);
 	}
 
 	// Unlock/lock mouse cursor
-	if (m_Window->GetKeyDown(Core::KEYCODE::F, true))
+	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::F, true))
 	{
 		if (!m_Window->IsMouseLocked())
 		{
