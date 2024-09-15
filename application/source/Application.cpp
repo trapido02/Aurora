@@ -48,14 +48,19 @@ void Application::Run()
 	glDebugMessageCallback(MessageCallback, 0);
 
 	m_Shader = new Aurora::Renderer::Shader("resources/shaders/shader.vert", "resources/shaders/shader.frag");
-	m_Camera = new Aurora::Renderer::Camera(m_Window, glm::vec3(0.0f, 0.0f, 3.0f), 60.0f, 0.1f, 100.0f);
-	m_Model = new Aurora::Renderer::Model("resources/models/Duck.gltf");
+	m_Camera = new Aurora::Renderer::Camera(m_Window, glm::vec3(0.0f, 1.0f, 3.0f), 60.0f, 0.1f, 100.0f);
+
+	// Load models
+	m_Baseplate = new Aurora::Renderer::Model("resources/models/baseplate.gltf");
+	m_Duck = new Aurora::Renderer::Model("resources/models/Duck.gltf");
 
 	m_AmbientLight = new Aurora::Renderer::AmbientLight(*m_Shader);
 	m_DirectionalLight = new Aurora::Renderer::DirectionalLight(*m_Shader);
 
 	m_Shader->Create();
-	m_Model->Create();
+
+	m_Baseplate->Create();
+	m_Duck->Create();
 
 	float timeSinceLastFrame = 0.0f;
 
@@ -66,7 +71,7 @@ void Application::Run()
 		timeSinceLastFrame = glfwGetTime();
 
 		m_Renderer->Clear();
-		m_Renderer->ClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		m_Renderer->ClearColor(0.7f, 0.8f, 1.0f, 1.0f);
 
 		m_Window->PreUpdate();
 
@@ -81,11 +86,15 @@ void Application::Run()
 		m_DirectionalLight->SetColor(m_DirectionalLightColor);
 		m_DirectionalLight->SetStrength(m_DirectionalLightStrength);
 
-		// Scale the model and draw it
-		m_Model->SetScale(m_ModelSize);
-		m_Model->SetPosition(m_ModelPosition);
+		// Scale the models and draw it
+		m_Baseplate->SetScale(m_BaseplateSize);
+		m_Baseplate->SetPosition(m_BaseplatePosition);
 
-		m_Model->Draw(*m_Shader);
+		m_Duck->SetScale(m_DuckSize);
+		m_Duck->SetPosition(m_DuckPosition);
+
+		m_Baseplate->Draw(*m_Shader);
+		m_Duck->Draw(*m_Shader);
 
 		Application::ImGuiRender();
 
@@ -100,13 +109,17 @@ void Application::Destroy()
 
 	m_Window->Destroy();
 	m_Shader->Destroy();
-	m_Model->Destroy();
+
+	m_Baseplate->Destroy();
+	m_Duck->Destroy();
 
 	delete m_Window;
 	delete m_Renderer;
 	delete m_Shader;
 	delete m_Camera;
-	delete m_Model;
+
+	delete m_Baseplate;
+	delete m_Duck;
 
 	delete m_AmbientLight;
 	delete m_DirectionalLight;
@@ -116,8 +129,21 @@ void Application::Destroy()
 
 void Application::ImGuiRender()
 {
-	ImGui::DragFloat3("Size", &m_ModelSize.x, 0.1f, 0.1f, 10.0f);
-	ImGui::DragFloat3("Position", &m_ModelPosition.x, 0.1f, -10000.0f, 10000.0f);
+	if (ImGui::CollapsingHeader("Baseplate", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::PushID("Baseplate");
+		ImGui::DragFloat3("Size", &m_BaseplateSize.x, 0.1f, 0.1f, 10.0f);
+		ImGui::DragFloat3("Position", &m_BaseplatePosition.x, 0.1f, -10000.0f, 10000.0f);
+		ImGui::PopID();
+	}
+
+	if (ImGui::CollapsingHeader("Duck", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		ImGui::PushID("Duck");
+		ImGui::DragFloat3("Size", &m_DuckSize.x, 0.1f, 0.1f, 10.0f);
+		ImGui::DragFloat3("Position", &m_DuckPosition.x, 0.1f, -10000.0f, 10000.0f);
+		ImGui::PopID();
+	}
 
 	if (ImGui::CollapsingHeader("Ambient Light", ImGuiTreeNodeFlags_DefaultOpen))
 	{
