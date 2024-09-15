@@ -36,12 +36,9 @@ namespace Aurora::Core {
 		// Load glad, should maybe be removed since this window class should ONLY handle the window, and not glad really.
 		gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
-		// To be fixed!!!
-		// glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) { });
-
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
 			glViewport(0, 0, width, height);
-			});
+		});
 
 		// Load ImGui
 		ImGui::CreateContext();
@@ -95,6 +92,16 @@ namespace Aurora::Core {
 	void Window::SetVsync(bool state)
 	{
 		m_Vsync = state;
+	}
+
+	void Window::SetCloseCallback(std::function<void()> callback)
+	{
+		glfwSetWindowUserPointer(m_Window, new std::function<void()>(callback));
+
+		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) {
+			auto func = static_cast<std::function<void()>*>(glfwGetWindowUserPointer(window));
+			(*func)();
+		});
 	}
 
 	bool Window::GetKeyDown(KEYCODE keycode, bool once)

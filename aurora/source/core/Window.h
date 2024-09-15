@@ -2,6 +2,8 @@
 
 #include <GLFW/glfw3.h>
 
+#include <functional>
+
 namespace Aurora::Core {
 
 	enum class KEYCODE
@@ -27,6 +29,8 @@ namespace Aurora::Core {
 		void PreUpdate();
 		void PostUpdate();
 		void SetVsync(bool state);
+
+		void SetCloseCallback(std::function<void()> lambda);
 
 		bool GetKeyDown(KEYCODE keycode, bool once = false);
 		void GetMousePosition(double& x, double& y);

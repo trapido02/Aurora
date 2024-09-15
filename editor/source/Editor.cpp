@@ -31,6 +31,7 @@ void Editor::Create()
 {
 	m_Window = new Aurora::Core::Window("Aurora", 720 * 16 / 9, 720);
 	m_Window->Create();
+	m_Window->SetCloseCallback([this]() { Editor::Destroy(); });
 	m_Window->SetVsync(true);
 
 	// Setup logger
