@@ -191,21 +191,37 @@ void Application::ProcessInput(float deltaTime)
 	}
 
 	// Move camera
+	glm::vec3 direction(0.0f);
+	bool shouldMove = false;
+
 	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::W))
 	{
-		m_Camera->MoveForward(deltaTime);
+		glm::vec3 orientation = m_Camera->GetOrientation();
+		direction += glm::vec3(orientation.x, 0.0f, orientation.z);
+		shouldMove = true;
 	}
 	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::S))
 	{
-		m_Camera->MoveBackward(deltaTime);
+		glm::vec3 orientation = m_Camera->GetOrientation();
+		direction -= glm::vec3(orientation.x, 0.0f, orientation.z);
+		shouldMove = true;
 	}
 	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::A))
 	{
-		m_Camera->MoveLeft(deltaTime);
+		glm::vec3 orientation = m_Camera->GetOrientation();
+		direction += glm::cross(-orientation, m_Camera->GetUp());
+		shouldMove = true;
 	}
 	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::D))
 	{
-		m_Camera->MoveRight(deltaTime);
+		glm::vec3 orientation = m_Camera->GetOrientation();
+		direction -= glm::cross(-orientation, m_Camera->GetUp());
+		shouldMove = true;
+	}
+
+	if (shouldMove)
+	{
+		m_Camera->Translate(direction, deltaTime);
 	}
 
 	// Unlock/lock mouse cursor

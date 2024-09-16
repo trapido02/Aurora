@@ -38,16 +38,54 @@ namespace Aurora::Renderer {
 		}
 	}
 
+	void Camera::Translate(const glm::vec3& direction, float deltaTime)
+	{
+		float velocity = m_Speed * deltaTime;
+		m_Position += velocity * glm::normalize(direction);
+	}
+
+	void Camera::Rotate(const glm::vec3& axis, float angle, float deltaTime)
+	{
+		float radians = glm::radians(angle) * deltaTime;
+		glm::quat rotationQuat = glm::angleAxis(radians, glm::normalize(axis));
+		m_Orientation = glm::normalize(rotationQuat * m_Orientation);
+	}
+
+	void Camera::SetPosition(const glm::vec3& position)
+	{
+		m_Position = position;
+	}
+
+	void Camera::SetOrientation(const glm::vec3& orientation)
+	{
+		m_Orientation = orientation;
+	}
+
+	glm::vec3 Camera::GetPosition() const
+	{
+		return m_Position;
+	}
+
+	glm::vec3 Camera::GetOrientation() const
+	{
+		return m_Orientation;
+	}
+
+	glm::vec3 Camera::GetUp() const
+	{
+		return m_Up;
+	}
+
 	void Camera::MoveForward(float deltaTime)
 	{
 		float velocity = m_Speed * deltaTime;
-		m_Position += velocity * m_Orientation;
+		m_Position += velocity * glm::normalize(glm::vec3(m_Orientation.x, 0.0f, m_Orientation.z));
 	}
 
 	void Camera::MoveBackward(float deltaTime)
 	{
 		float velocity = m_Speed * deltaTime;
-		m_Position -= velocity * m_Orientation;
+		m_Position -= velocity * glm::normalize(glm::vec3(m_Orientation.x, 0.0f, m_Orientation.z));
 	}
 
 	void Camera::MoveLeft(float deltaTime)

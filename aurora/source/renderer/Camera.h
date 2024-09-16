@@ -17,6 +17,17 @@ namespace Aurora::Renderer {
 
 		void Update(Shader& shader);
 
+		void Translate(const glm::vec3& direction, float deltaTime);
+		void Rotate(const glm::vec3& axis, float angle, float deltaTime);
+
+		void SetPosition(const glm::vec3& position);
+		void SetOrientation(const glm::vec3& orientation);
+		
+		glm::vec3 GetPosition() const;
+		glm::vec3 GetOrientation() const;
+
+		glm::vec3 GetUp() const;
+
 		void MoveForward(float deltaTime);
 		void MoveBackward(float deltaTime);
 		void MoveLeft(float deltaTime);
