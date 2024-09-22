@@ -32,16 +32,13 @@ project "aurora"
 
 	libdirs
 	{
-		"vendor/glfw/lib-vc2022",
-		"vendor/assimp/lib"
+		"vendor/glfw/lib-vc2022"
 	}
 
 	links
 	{
 		"glfw3.lib",
-		"opengl32.lib",
-		"assimp-vc143-mtd.lib",
-		"zlibstaticd.lib"
+		"opengl32.lib"
 	}
 
 	targetdir ("../bin/" .. OutputDir .. "/%{prj.name}")
@@ -59,9 +56,31 @@ project "aurora"
 		buildoptions "/MDd"
 		symbols "On"
 
+		libdirs
+		{
+			"vendor/assimp/lib/debug"
+		}
+
+		links
+		{
+			"assimp-vc143-mtd.lib",
+			"zlibstaticd.lib"
+		}
+
 	filter "configurations:Release"
 		defines { "NDEBUG" }
 		runtime "Release"
 		buildoptions "/MD"
 		symbols "On"
 		optimize "On"
+
+		libdirs
+		{
+			"vendor/assimp/lib/release"
+		}
+
+		links
+		{
+			"assimp-vc143-mt.lib",
+			"zlibstatic.lib"
+		}
