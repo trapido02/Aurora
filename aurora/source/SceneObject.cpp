@@ -19,21 +19,6 @@ namespace Aurora {
 		m_Size = size;
 	}
 
-	const glm::vec3& SceneObject::GetPosition() const
-	{
-		return m_Position;
-	}
-
-	const glm::vec3& SceneObject::GetRotation() const
-	{
-		return m_Rotation;
-	}
-
-	const glm::vec3& SceneObject::GetSize() const
-	{
-		return m_Size;
-	}
-
 	void SceneObject::Translate(const glm::vec3& axis, float amount, float deltaTime)
 	{
 		glm::vec3 newPosition = axis * amount * deltaTime;
@@ -52,20 +37,64 @@ namespace Aurora {
 		m_Size += newSize;
 	}
 
-	const glm::mat4& SceneObject::GetTransformMatrix() const
+	const glm::vec3 SceneObject::GetPosition() const
+	{
+		return m_Position;
+	}
+
+	const glm::vec3 SceneObject::GetRotation() const
+	{
+		return m_Rotation;
+	}
+
+	const glm::vec3 SceneObject::GetSize() const
+	{
+		return m_Size;
+	}
+
+	const glm::vec3 SceneObject::GetGlobalUpVector() const
+	{
+		return glm::vec3(0.0f, 1.0f, 0.0f);
+	}
+
+	const glm::vec3 SceneObject::GetGlobalForwardVector() const
+	{
+		return glm::vec3(0.0f, 0.0f, -1.0f);
+	}
+
+	const glm::vec3 SceneObject::GetGlobalRightVector() const
+	{
+		return glm::vec3(1.0f, 0.0f, 0.0f);
+	}
+
+	const glm::vec3 SceneObject::GetLocalUpVector() const
+	{
+		return glm::normalize(glm::cross(GetLocalRightVector(), GetLocalForwardVector()));
+	}
+
+	const glm::vec3 SceneObject::GetLocalForwardVector() const
+	{
+		glm::mat4 transformation = SceneObject::GetTransformMatrix();
+
+		return glm::normalize(glm::vec3(-transformation[2]));
+	}
+
+	const glm::vec3 SceneObject::GetLocalRightVector() const
+	{
+		return glm::normalize(glm::cross(GetLocalForwardVector(), GetGlobalUpVector()));
+	}
+
+	const glm::mat4 SceneObject::GetTransformMatrix() const
 	{
 		glm::mat4 model = glm::mat4(1.0f);
 
-		// Apply position
-		model = glm::translate(model, SceneObject::GetPosition());
+		model = glm::scale(model, m_Size);
 
-		// Apply rotation for each axis
-		model = glm::rotate(model, SceneObject::GetRotation().x, glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, SceneObject::GetRotation().y, glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::rotate(model, SceneObject::GetRotation().z, glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::rotate(model, m_Rotation.z, glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::rotate(model, m_Rotation.y, glm::vec3(0.0f, 1.0f, 0.0f));
+		model = glm::rotate(model, m_Rotation.x, glm::vec3(1.0f, 0.0f, 0.0f));
 
-		// Apply scale
-		model = glm::scale(model, SceneObject::GetSize());
+		model = glm::translate(model, m_Position);
 
 		return model;
 	}

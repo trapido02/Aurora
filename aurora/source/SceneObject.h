@@ -17,15 +17,23 @@ namespace Aurora {
 		void SetRotation(const glm::vec3& rotation);
 		void SetSize(const glm::vec3& scale);
 
-		const glm::vec3& GetPosition() const;
-		const glm::vec3& GetRotation() const;
-		const glm::vec3& GetSize() const;
-
 		void Translate(const glm::vec3& axis, float amount, float deltaTime);
 		void Rotate(const glm::vec3& axis, float amount, float deltaTime);
 		void Scale(const glm::vec3& axis, float amount, float deltaTime);
 
-		const glm::mat4& GetTransformMatrix() const;
+		const glm::vec3 GetPosition() const;
+		const glm::vec3 GetRotation() const;
+		const glm::vec3 GetSize() const;
+
+		const glm::vec3 GetGlobalUpVector() const;
+		const glm::vec3 GetGlobalForwardVector() const;
+		const glm::vec3 GetGlobalRightVector() const;
+
+		const glm::vec3 GetLocalUpVector() const;
+		const glm::vec3 GetLocalForwardVector() const;
+		const glm::vec3 GetLocalRightVector() const;
+
+		const glm::mat4 GetTransformMatrix() const;
 	private:
 		glm::vec3 m_Position = glm::vec3(0.0f, 0.0f, 0.0f);
 		glm::vec3 m_Rotation = glm::vec3(0.0f, 0.0f, 0.0f);

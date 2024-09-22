@@ -51,7 +51,6 @@ void Application::Run()
 	m_Shader = new Aurora::Renderer::Shader("resources/shaders/shader.vert", "resources/shaders/shader.frag");
 	m_Camera = new Aurora::Renderer::Camera(m_Window, 60.0f, 0.1f, 100.0f);
 	m_Camera->SetPosition(glm::vec3(-1.0f, 1.0f, 0.0f));
-	m_Camera->SetRotation(glm::vec3(glm::radians(45.0f), 0.0f, 0.0f));
 
 	// Load models
 	m_Baseplate = new Aurora::Renderer::Model("resources/models/baseplate.gltf");
@@ -92,6 +91,7 @@ void Application::Run()
 		// Scale the models and draw it
 		m_Baseplate->SetSize(m_BaseplateSize);
 		m_Baseplate->SetPosition(m_BaseplatePosition);
+		m_Baseplate->SetRotation(glm::radians(m_BaseplateRotation));
 
 		m_Duck->SetSize(m_DuckSize);
 		m_Duck->SetPosition(m_DuckPosition);
@@ -133,17 +133,10 @@ void Application::Destroy()
 
 void Application::ImGuiRender()
 {
-	glm::mat4 mat = m_Duck->GetTransformMatrix();
-	ImGui::Text("Duck transformation matrix: ");
-	ImGui::Text(" %.3f, %.3f, %.3f, %.3f", mat[0][0], mat[0][1], mat[0][2], mat[0][3]);
-	ImGui::Text(" %.3f, %.3f, %.3f, %.3f", mat[1][0], mat[1][1], mat[1][2], mat[1][3]);
-	ImGui::Text(" %.3f, %.3f, %.3f, %.3f", mat[2][0], mat[2][1], mat[2][2], mat[2][3]);
-	ImGui::Text(" %.3f, %.3f, %.3f, %.3f", mat[3][0], mat[3][1], mat[3][2], mat[3][3]);
-
 	if (ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		glm::vec3 cameraPosition = m_Camera->GetPosition();
-		glm::vec3 cameraRotation = m_Camera->GetRotation();
+		glm::vec3 cameraRotation = glm::degrees(m_Camera->GetRotation());
 		glm::vec3 cameraSize = m_Camera->GetSize();
 
 		ImGui::PushID("Camera");
@@ -153,22 +146,23 @@ void Application::ImGuiRender()
 		ImGui::PopID();
 	}
 
-	if (ImGui::CollapsingHeader("Baseplate", ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader("Baseplate"))
 	{
 		glm::vec3 baseplatePosition = m_Baseplate->GetPosition();
 		glm::vec3 baseplateRotation = m_Baseplate->GetRotation();
 		glm::vec3 baseplateSize = m_Baseplate->GetSize();
 
 		ImGui::PushID("Baseplate");
-		ImGui::Text("Position: (%.3f, %.3f, %.3f)", baseplatePosition.x, baseplatePosition.y, baseplatePosition.z);
-		ImGui::Text("Rotation: (%.3f, %.3f, %.3f)", baseplateRotation.x, baseplateRotation.y, baseplateRotation.z);
 		ImGui::Text("Size: (%.3f, %.3f, %.3f)", baseplateSize.x, baseplateSize.y, baseplateSize.z);
 		ImGui::DragFloat3("Size", &m_BaseplateSize.x, 0.1f, 0.1f, 10.0f);
+		ImGui::Text("Position: (%.3f, %.3f, %.3f)", baseplatePosition.x, baseplatePosition.y, baseplatePosition.z);
 		ImGui::DragFloat3("Position", &m_BaseplatePosition.x, 0.1f, -10000.0f, 10000.0f);
+		ImGui::Text("Rotation: (%.3f, %.3f, %.3f)", baseplateRotation.x, baseplateRotation.y, baseplateRotation.z);
+		ImGui::DragFloat3("Rotation", &m_BaseplateRotation.x, 1.0f, -180.0f, 180.0f);
 		ImGui::PopID();
 	}
 
-	if (ImGui::CollapsingHeader("Duck", ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader("Duck"))
 	{
 		glm::vec3 duckPosition = m_Duck->GetPosition();
 		glm::vec3 duckRotation = m_Duck->GetRotation();
@@ -184,7 +178,7 @@ void Application::ImGuiRender()
 		ImGui::PopID();
 	}
 
-	if (ImGui::CollapsingHeader("Ambient Light", ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader("Ambient Light"))
 	{
 		ImGui::PushID("AmbientLight");
 		ImGui::DragFloat3("Color", &m_AmbientLightColor.x, 0.1f, 0.0f, 1.0f);
@@ -192,7 +186,7 @@ void Application::ImGuiRender()
 		ImGui::PopID();
 	}
 
-	if (ImGui::CollapsingHeader("Directional Light", ImGuiTreeNodeFlags_DefaultOpen))
+	if (ImGui::CollapsingHeader("Directional Light"))
 	{
 		ImGui::PushID("DirectionalLight");
 		ImGui::DragFloat3("Direction", &m_DirectionalLightDirection.x, 0.1f, -1.0f, 1.0f);
@@ -234,30 +228,30 @@ void Application::ProcessInput(float deltaTime)
 
 	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::W))
 	{
-		glm::vec3 rotation = m_Camera->GetRotation();
-		direction += glm::vec3(rotation.x, rotation.y, rotation.z);
+		glm::vec3 forward = m_Camera->GetLocalForwardVector();
+		direction += forward;
 		shouldMove = true;
 	}
 	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::S))
 	{
-		glm::vec3 rotation = m_Camera->GetRotation();
-		direction -= glm::vec3(rotation.x, rotation.y, rotation.z);
+		glm::vec3 forward = m_Camera->GetLocalForwardVector();
+		direction -= forward;
 		shouldMove = true;
 	}
 	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::A))
 	{
-		glm::vec3 rotation = m_Camera->GetRotation();
-		direction += glm::cross(-rotation, glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::vec3 right = m_Camera->GetLocalRightVector();
+		direction -= right;
 		shouldMove = true;
 	}
 	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::D))
 	{
-		glm::vec3 rotation = m_Camera->GetRotation();
-		direction -= glm::cross(-rotation, glm::vec3(0.0f, 1.0f, 0.0f));
+		glm::vec3 right = m_Camera->GetLocalRightVector();
+		direction += right;
 		shouldMove = true;
 	}
 
-	if (shouldMove)
+	if (shouldMove && (direction != glm::vec3(0.0f, 0.0f, 0.0f)))
 	{
 		m_Camera->Translate(glm::normalize(direction), 5.0f, deltaTime);
 	}

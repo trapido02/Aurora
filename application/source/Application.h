@@ -31,6 +31,7 @@ private:
 
 	glm::vec3 m_BaseplateSize = glm::vec3(1.0f, 1.0f, 1.0f);
 	glm::vec3 m_BaseplatePosition = glm::vec3(0.0f, 0.0f, 0.0f);
+	glm::vec3 m_BaseplateRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 	glm::vec3 m_DuckSize = glm::vec3(1.0f, 1.0f, 1.0f);
 	glm::vec3 m_DuckPosition = glm::vec3(0.0f, -0.1f, 0.0f);

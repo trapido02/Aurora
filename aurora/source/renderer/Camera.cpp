@@ -28,7 +28,12 @@ namespace Aurora::Renderer {
 
 		if (windowWidth != NULL || windowHeight != NULL)
 		{
-			view = glm::lookAt(Camera::GetPosition(), Camera::GetPosition() + Camera::GetRotation(), glm::vec3(0.0f, 1.0f, 0.0f));
+			glm::vec3 rotation = Camera::GetRotation();
+			glm::vec3 up = Camera::GetGlobalUpVector();
+			glm::vec3 forward = Camera::GetLocalForwardVector();
+			glm::vec3 position = Camera::GetPosition();
+
+			view = glm::lookAt(position, position + forward, glm::vec3(0.0f, 1.0f, 0.0f));
 			projection = glm::perspective(glm::radians(m_Fov), (float)windowWidth / (float)windowHeight, m_NearPlane, m_FarPlane);
 
 			shader.Bind();
@@ -51,14 +56,19 @@ namespace Aurora::Renderer {
 
 		glm::vec3 rotation = Camera::GetRotation();
 
-		glm::vec3 newOrientation = glm::rotate(rotation, glm::radians(-rotX), glm::normalize(glm::cross(rotation, glm::vec3(0.0f, 1.0f, 0.0f))));
+		rotation.x -= glm::radians(rotX);
+		rotation.y -= glm::radians(rotY);
 
-		if (abs(glm::angle(newOrientation, glm::vec3(0.0f, 1.0f, 0.0f)) - glm::radians(90.0f)) <= glm::radians(50.0f))
-		{
-			rotation = newOrientation;
-		}
+		if (rotation.x > glm::radians(89.0f))
+			rotation.x = glm::radians(89.0f);
+		if (rotation.x < glm::radians(-89.0f))
+			rotation.x = glm::radians(-89.0f);
 
-		rotation = glm::rotate(rotation, glm::radians(-rotY), glm::vec3(0.0f, 1.0f, 0.0f));
+		if (rotation.y > glm::radians(180.0f))
+			rotation.y = glm::radians(-180.0f);
+		if (rotation.y < glm::radians(-180.0f))
+			rotation.y = glm::radians(180.0f);
+
 		Camera::SetRotation(rotation);
 
 		m_Window->SetCursorPosition(((float)windowWidth / 2), ((float)windowHeight / 2));
