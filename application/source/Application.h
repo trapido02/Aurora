@@ -34,6 +34,7 @@ private:
 
 	glm::vec3 m_DuckSize = glm::vec3(1.0f, 1.0f, 1.0f);
 	glm::vec3 m_DuckPosition = glm::vec3(0.0f, -0.1f, 0.0f);
+	glm::vec3 m_DuckRotation = glm::vec3(0.0f, 0.0f, 0.0f);
 
 	glm::vec3 m_AmbientLightColor = glm::vec3(0.7f, 0.8f, 1.0f);
 	float m_AmbientLightStrength = 0.4f;

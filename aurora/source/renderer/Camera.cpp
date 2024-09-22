@@ -4,8 +4,8 @@
 
 namespace Aurora::Renderer {
 
-	Camera::Camera(Core::Window* window, glm::vec3 position, float fov, float nearPlane, float farPlane)
-		: m_Window(window), m_Position(position), m_Fov(fov), m_NearPlane(nearPlane), m_FarPlane(farPlane)
+	Camera::Camera(Core::Window* window, float fov, float nearPlane, float farPlane)
+		: m_Window(window), m_Fov(fov), m_NearPlane(nearPlane), m_FarPlane(farPlane)
 	{
 	}
 
@@ -28,7 +28,7 @@ namespace Aurora::Renderer {
 
 		if (windowWidth != NULL || windowHeight != NULL)
 		{
-			view = glm::lookAt(m_Position, m_Position + m_Orientation, m_Up);
+			view = glm::lookAt(Camera::GetPosition(), Camera::GetPosition() + Camera::GetRotation(), glm::vec3(0.0f, 1.0f, 0.0f));
 			projection = glm::perspective(glm::radians(m_Fov), (float)windowWidth / (float)windowHeight, m_NearPlane, m_FarPlane);
 
 			shader.Bind();
@@ -36,68 +36,6 @@ namespace Aurora::Renderer {
 			shader.SetUniformMatrix4fv("projection", projection);
 			shader.Unbind();
 		}
-	}
-
-	void Camera::Translate(const glm::vec3& direction, float deltaTime)
-	{
-		float velocity = m_Speed * deltaTime;
-		m_Position += velocity * glm::normalize(direction);
-	}
-
-	void Camera::Rotate(const glm::vec3& axis, float angle, float deltaTime)
-	{
-		float radians = glm::radians(angle) * deltaTime;
-		glm::quat rotationQuat = glm::angleAxis(radians, glm::normalize(axis));
-		m_Orientation = glm::normalize(rotationQuat * m_Orientation);
-	}
-
-	void Camera::SetPosition(const glm::vec3& position)
-	{
-		m_Position = position;
-	}
-
-	void Camera::SetOrientation(const glm::vec3& orientation)
-	{
-		m_Orientation = orientation;
-	}
-
-	glm::vec3 Camera::GetPosition() const
-	{
-		return m_Position;
-	}
-
-	glm::vec3 Camera::GetOrientation() const
-	{
-		return m_Orientation;
-	}
-
-	glm::vec3 Camera::GetUp() const
-	{
-		return m_Up;
-	}
-
-	void Camera::MoveForward(float deltaTime)
-	{
-		float velocity = m_Speed * deltaTime;
-		m_Position += velocity * glm::normalize(glm::vec3(m_Orientation.x, 0.0f, m_Orientation.z));
-	}
-
-	void Camera::MoveBackward(float deltaTime)
-	{
-		float velocity = m_Speed * deltaTime;
-		m_Position -= velocity * glm::normalize(glm::vec3(m_Orientation.x, 0.0f, m_Orientation.z));
-	}
-
-	void Camera::MoveLeft(float deltaTime)
-	{
-		float velocity = m_Speed * deltaTime;
-		m_Position -= velocity * glm::normalize(glm::cross(m_Orientation, m_Up));
-	}
-
-	void Camera::MoveRight(float deltaTime)
-	{
-		float velocity = m_Speed * deltaTime;
-		m_Position += velocity * glm::normalize(glm::cross(m_Orientation, m_Up));
 	}
 
 	void Camera::ProcessMouse()
@@ -111,15 +49,18 @@ namespace Aurora::Renderer {
 		float rotX = m_Sensitivity * ((float)mouseY - ((float)windowHeight / 2.0f)) / (float)windowHeight;
 		float rotY = m_Sensitivity * ((float)mouseX - ((float)windowWidth / 2.0f)) / (float)windowWidth;
 
-		glm::vec3 newOrientation = glm::rotate(m_Orientation, glm::radians(-rotX), glm::normalize(glm::cross(m_Orientation, m_Up)));
+		glm::vec3 rotation = Camera::GetRotation();
 
-		if (abs(glm::angle(newOrientation, m_Up) - glm::radians(90.0f)) <= glm::radians(85.0f))
+		glm::vec3 newOrientation = glm::rotate(rotation, glm::radians(-rotX), glm::normalize(glm::cross(rotation, glm::vec3(0.0f, 1.0f, 0.0f))));
+
+		if (abs(glm::angle(newOrientation, glm::vec3(0.0f, 1.0f, 0.0f)) - glm::radians(90.0f)) <= glm::radians(50.0f))
 		{
-			m_Orientation = newOrientation;
+			rotation = newOrientation;
 		}
 
-		m_Orientation = glm::rotate(m_Orientation, glm::radians(-rotY), m_Up);
-		
+		rotation = glm::rotate(rotation, glm::radians(-rotY), glm::vec3(0.0f, 1.0f, 0.0f));
+		Camera::SetRotation(rotation);
+
 		m_Window->SetCursorPosition(((float)windowWidth / 2), ((float)windowHeight / 2));
 	}
 

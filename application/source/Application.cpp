@@ -49,7 +49,9 @@ void Application::Run()
 	glDebugMessageCallback(MessageCallback, 0);
 
 	m_Shader = new Aurora::Renderer::Shader("resources/shaders/shader.vert", "resources/shaders/shader.frag");
-	m_Camera = new Aurora::Renderer::Camera(m_Window, glm::vec3(0.0f, 1.0f, 3.0f), 60.0f, 0.1f, 100.0f);
+	m_Camera = new Aurora::Renderer::Camera(m_Window, 60.0f, 0.1f, 100.0f);
+	m_Camera->SetPosition(glm::vec3(-1.0f, 1.0f, 0.0f));
+	m_Camera->SetRotation(glm::vec3(glm::radians(45.0f), 0.0f, 0.0f));
 
 	// Load models
 	m_Baseplate = new Aurora::Renderer::Model("resources/models/baseplate.gltf");
@@ -88,11 +90,12 @@ void Application::Run()
 		m_DirectionalLight->SetStrength(m_DirectionalLightStrength);
 
 		// Scale the models and draw it
-		m_Baseplate->SetScale(m_BaseplateSize);
+		m_Baseplate->SetSize(m_BaseplateSize);
 		m_Baseplate->SetPosition(m_BaseplatePosition);
 
-		m_Duck->SetScale(m_DuckSize);
+		m_Duck->SetSize(m_DuckSize);
 		m_Duck->SetPosition(m_DuckPosition);
+		m_Duck->SetRotation(glm::radians(m_DuckRotation));
 
 		m_Baseplate->Draw(*m_Shader);
 		m_Duck->Draw(*m_Shader);
@@ -130,9 +133,36 @@ void Application::Destroy()
 
 void Application::ImGuiRender()
 {
+	glm::mat4 mat = m_Duck->GetTransformMatrix();
+	ImGui::Text("Duck transformation matrix: ");
+	ImGui::Text(" %.3f, %.3f, %.3f, %.3f", mat[0][0], mat[0][1], mat[0][2], mat[0][3]);
+	ImGui::Text(" %.3f, %.3f, %.3f, %.3f", mat[1][0], mat[1][1], mat[1][2], mat[1][3]);
+	ImGui::Text(" %.3f, %.3f, %.3f, %.3f", mat[2][0], mat[2][1], mat[2][2], mat[2][3]);
+	ImGui::Text(" %.3f, %.3f, %.3f, %.3f", mat[3][0], mat[3][1], mat[3][2], mat[3][3]);
+
+	if (ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_DefaultOpen))
+	{
+		glm::vec3 cameraPosition = m_Camera->GetPosition();
+		glm::vec3 cameraRotation = m_Camera->GetRotation();
+		glm::vec3 cameraSize = m_Camera->GetSize();
+
+		ImGui::PushID("Camera");
+		ImGui::Text("Position: (%.3f, %.3f, %.3f)", cameraPosition.x, cameraPosition.y, cameraPosition.z);
+		ImGui::Text("Rotation: (%.3f, %.3f, %.3f)", cameraRotation.x, cameraRotation.y, cameraRotation.z);
+		ImGui::Text("Size: (%.3f, %.3f, %.3f)", cameraSize.x, cameraSize.y, cameraSize.z);
+		ImGui::PopID();
+	}
+
 	if (ImGui::CollapsingHeader("Baseplate", ImGuiTreeNodeFlags_DefaultOpen))
 	{
+		glm::vec3 baseplatePosition = m_Baseplate->GetPosition();
+		glm::vec3 baseplateRotation = m_Baseplate->GetRotation();
+		glm::vec3 baseplateSize = m_Baseplate->GetSize();
+
 		ImGui::PushID("Baseplate");
+		ImGui::Text("Position: (%.3f, %.3f, %.3f)", baseplatePosition.x, baseplatePosition.y, baseplatePosition.z);
+		ImGui::Text("Rotation: (%.3f, %.3f, %.3f)", baseplateRotation.x, baseplateRotation.y, baseplateRotation.z);
+		ImGui::Text("Size: (%.3f, %.3f, %.3f)", baseplateSize.x, baseplateSize.y, baseplateSize.z);
 		ImGui::DragFloat3("Size", &m_BaseplateSize.x, 0.1f, 0.1f, 10.0f);
 		ImGui::DragFloat3("Position", &m_BaseplatePosition.x, 0.1f, -10000.0f, 10000.0f);
 		ImGui::PopID();
@@ -140,9 +170,17 @@ void Application::ImGuiRender()
 
 	if (ImGui::CollapsingHeader("Duck", ImGuiTreeNodeFlags_DefaultOpen))
 	{
+		glm::vec3 duckPosition = m_Duck->GetPosition();
+		glm::vec3 duckRotation = m_Duck->GetRotation();
+		glm::vec3 duckSize = m_Duck->GetSize();
+
 		ImGui::PushID("Duck");
+		ImGui::Text("Size: (%.3f, %.3f, %.3f)", duckSize.x, duckSize.y, duckSize.z);
 		ImGui::DragFloat3("Size", &m_DuckSize.x, 0.1f, 0.1f, 10.0f);
+		ImGui::Text("Position: (%.3f, %.3f, %.3f)", duckPosition.x, duckPosition.y, duckPosition.z);
 		ImGui::DragFloat3("Position", &m_DuckPosition.x, 0.1f, -10000.0f, 10000.0f);
+		ImGui::Text("Rotation: (%.3f, %.3f, %.3f)", duckRotation.x, duckRotation.y, duckRotation.z);
+		ImGui::DragFloat3("Rotation", &m_DuckRotation.x, 1.0f, -180.0f, 180.0f);
 		ImGui::PopID();
 	}
 
@@ -196,32 +234,32 @@ void Application::ProcessInput(float deltaTime)
 
 	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::W))
 	{
-		glm::vec3 orientation = m_Camera->GetOrientation();
-		direction += glm::vec3(orientation.x, 0.0f, orientation.z);
+		glm::vec3 rotation = m_Camera->GetRotation();
+		direction += glm::vec3(rotation.x, rotation.y, rotation.z);
 		shouldMove = true;
 	}
 	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::S))
 	{
-		glm::vec3 orientation = m_Camera->GetOrientation();
-		direction -= glm::vec3(orientation.x, 0.0f, orientation.z);
+		glm::vec3 rotation = m_Camera->GetRotation();
+		direction -= glm::vec3(rotation.x, rotation.y, rotation.z);
 		shouldMove = true;
 	}
 	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::A))
 	{
-		glm::vec3 orientation = m_Camera->GetOrientation();
-		direction += glm::cross(-orientation, m_Camera->GetUp());
+		glm::vec3 rotation = m_Camera->GetRotation();
+		direction += glm::cross(-rotation, glm::vec3(0.0f, 1.0f, 0.0f));
 		shouldMove = true;
 	}
 	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::D))
 	{
-		glm::vec3 orientation = m_Camera->GetOrientation();
-		direction -= glm::cross(-orientation, m_Camera->GetUp());
+		glm::vec3 rotation = m_Camera->GetRotation();
+		direction -= glm::cross(-rotation, glm::vec3(0.0f, 1.0f, 0.0f));
 		shouldMove = true;
 	}
 
 	if (shouldMove)
 	{
-		m_Camera->Translate(direction, deltaTime);
+		m_Camera->Translate(glm::normalize(direction), 5.0f, deltaTime);
 	}
 
 	// Unlock/lock mouse cursor

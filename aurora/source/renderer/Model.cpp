@@ -41,18 +41,7 @@ namespace Aurora::Renderer {
 
 	void Model::Draw(Shader& shader)
 	{ 
-		glm::mat4 model = glm::mat4(1.0f);
-
-		// Apply position
-		model = glm::translate(model, m_Position);
-
-		// Apply rotation for each axis
-		model = glm::rotate(model, glm::radians(m_Rotation.x), glm::vec3(1.0f, 0.0f, 0.0f));
-		model = glm::rotate(model, glm::radians(m_Rotation.y), glm::vec3(0.0f, 1.0f, 0.0f));
-		model = glm::rotate(model, glm::radians(m_Rotation.z), glm::vec3(0.0f, 0.0f, 1.0f));
-
-		// Apply scale
-		model = glm::scale(model, m_Scale);
+		glm::mat4 model = Model::GetTransformMatrix();
 
 		shader.Bind();
 		shader.SetUniformMatrix4fv("model", model);
@@ -62,21 +51,6 @@ namespace Aurora::Renderer {
 		{
 			m_Meshes[i].Draw(shader);
 		}
-	}
-
-	void Model::SetScale(glm::vec3 scale)
-	{
-		m_Scale = scale;
-	}
-
-	void Model::SetPosition(glm::vec3 position)
-	{
-		m_Position = position;
-	}
-
-	void Model::SetRotation(glm::vec3 rotation)
-	{
-		m_Rotation = rotation;
 	}
 
 	// Private methods
