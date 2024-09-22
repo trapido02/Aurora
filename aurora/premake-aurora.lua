@@ -3,6 +3,7 @@ project "aurora"
 	language "C++"
 	targetdir "../bin/%{cfg.buildcfg}"
 	cppdialect "C++20"
+	staticruntime "off"
 
 	pchheader "pch.h"
 	pchsource "source/pch.cpp"
@@ -54,10 +55,13 @@ project "aurora"
 
 	filter "configurations:Debug"
 		defines { "DEBUG" }
-		symbols "On"
+		runtime "Debug"
 		buildoptions "/MDd"
+		symbols "On"
 
 	filter "configurations:Release"
 		defines { "NDEBUG" }
-		optimize "On"
+		runtime "Release"
 		buildoptions "/MD"
+		symbols "On"
+		optimize "On"
