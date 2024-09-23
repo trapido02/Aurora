@@ -45,7 +45,10 @@ private:
 	float m_DirectionalLightStrength = 1.0f;
 
 	Aurora::Renderer::Renderer* m_Renderer = nullptr;
+
 	Aurora::Renderer::Shader* m_Shader = nullptr;
+	Aurora::Renderer::Shader* m_ScreenShader = nullptr;
+
 	Aurora::Renderer::Camera* m_Camera = nullptr;
 
 	Aurora::Renderer::Model* m_Baseplate = nullptr;
@@ -53,6 +56,12 @@ private:
 
 	Aurora::Renderer::AmbientLight* m_AmbientLight = nullptr;
 	Aurora::Renderer::DirectionalLight* m_DirectionalLight = nullptr;
+
+	Aurora::Renderer::FrameBuffer* m_FrameBuffer = nullptr;
+
+	Aurora::Renderer::VertexArray* m_Vao = nullptr;
+	Aurora::Renderer::VertexBuffer* m_Vbo = nullptr;
+	Aurora::Renderer::IndexBuffer* m_Ibo = nullptr;
 
 	Aurora::Core::Log* m_Logger = nullptr;
 };

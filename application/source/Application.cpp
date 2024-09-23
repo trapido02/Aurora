@@ -32,6 +32,11 @@ void Application::Create()
 	m_Window = new Aurora::Core::Window("Aurora", 720 * 16 / 9, 720);
 	m_Window->Create();
 	m_Window->SetCloseCallback([this]() { Application::Destroy(); });
+	m_Window->SetResizeCallback([this](int width, int height) {
+		INFO("Resized");
+		glViewport(0, 0, width, height);
+		m_FrameBuffer->Resize(width, height);
+	});
 	m_Window->SetVsync(true);
 
 	// Setup logger
@@ -49,6 +54,8 @@ void Application::Run()
 	glDebugMessageCallback(MessageCallback, 0);
 
 	m_Shader = new Aurora::Renderer::Shader("resources/shaders/shader.vert", "resources/shaders/shader.frag");
+	m_ScreenShader = new Aurora::Renderer::Shader("resources/shaders/shader_screen.vert", "resources/shaders/shader_screen.frag");
+
 	m_Camera = new Aurora::Renderer::Camera(m_Window, 60.0f, 0.1f, 100.0f);
 	m_Camera->SetPosition(glm::vec3(-1.0f, 1.0f, 0.0f));
 
@@ -59,10 +66,44 @@ void Application::Run()
 	m_AmbientLight = new Aurora::Renderer::AmbientLight(*m_Shader);
 	m_DirectionalLight = new Aurora::Renderer::DirectionalLight(*m_Shader);
 
+	int width, height;
+	m_Window->GetSize(width, height);
+
+	m_FrameBuffer = new Aurora::Renderer::FrameBuffer(width, height);
+	m_FrameBuffer->Create();
+
 	m_Shader->Create();
+	m_ScreenShader->Create();
+	m_ScreenShader->SetUniform1i("screenTexture", 0);
 
 	m_Baseplate->Create();
 	m_Duck->Create();
+
+	// Create quad
+	std::vector<Aurora::Renderer::Vertex> quadVertices = {
+		Aurora::Renderer::Vertex(glm::vec3(-1.0f, 1.0f, 0.0f), glm::vec2(0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f)),
+		Aurora::Renderer::Vertex(glm::vec3(-1.0f,-1.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f)),
+		Aurora::Renderer::Vertex(glm::vec3(1.0f,-1.0f, 0.0f), glm::vec2(1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f)),
+		Aurora::Renderer::Vertex(glm::vec3(-1.0f, 1.0f, 0.0f), glm::vec2(0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f)),
+		Aurora::Renderer::Vertex(glm::vec3(1.0f,-1.0f, 0.0f), glm::vec2(1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f)),
+		Aurora::Renderer::Vertex(glm::vec3(1.0f, 1.0f, 0.0f), glm::vec2(1.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f))
+	};
+
+	std::vector<unsigned int> quadIndices = {
+		1, 2, 3,
+		3, 4, 5
+	};
+
+	m_Vao = new Aurora::Renderer::VertexArray();
+	m_Vbo = new Aurora::Renderer::VertexBuffer(quadVertices);
+	m_Ibo = new Aurora::Renderer::IndexBuffer(quadIndices);
+
+	m_Vao->Create();
+	m_Vbo->Create();
+	m_Ibo->Create();
+
+	m_Vao->AttachVertexBuffer(*m_Vbo);
+	m_Vao->AttachIndexBuffer(*m_Ibo);
 
 	float timeSinceLastFrame = 0.0f;
 
@@ -74,6 +115,10 @@ void Application::Run()
 
 		m_Renderer->Clear();
 		m_Renderer->ClearColor(0.7f, 0.8f, 1.0f, 1.0f);
+
+		m_FrameBuffer->Bind();
+
+		m_Renderer->Clear();
 
 		m_Window->PreUpdate();
 
@@ -97,8 +142,27 @@ void Application::Run()
 		m_Duck->SetPosition(m_DuckPosition);
 		m_Duck->SetRotation(glm::radians(m_DuckRotation));
 
+		if (m_WireframeMode)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);  // Enable wireframe mode
+		}
+
 		m_Baseplate->Draw(*m_Shader);
 		m_Duck->Draw(*m_Shader);
+
+		if (m_WireframeMode)
+		{
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);  // Enable wireframe mode
+		}
+
+		m_FrameBuffer->Unbind();
+
+		m_ScreenShader->Bind();
+		m_Vao->Bind();
+		glBindTexture(GL_TEXTURE_2D, m_FrameBuffer->GetColorAttachmentID());
+		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(quadIndices.size()), GL_UNSIGNED_INT, nullptr);
+		m_Vao->Unbind();
+		m_ScreenShader->Unbind();
 
 		Application::ImGuiRender();
 
@@ -128,11 +192,16 @@ void Application::Destroy()
 	delete m_AmbientLight;
 	delete m_DirectionalLight;
 
+	delete m_FrameBuffer;
+
 	delete m_Logger;
 }
 
 void Application::ImGuiRender()
 {
+	unsigned int textureID = m_FrameBuffer->GetColorAttachmentID();
+	ImGui::Image((void*)textureID, ImVec2({ 256, 256 }), ImVec2({ 0, 1 }), ImVec2({ 1, 0 }));
+
 	if (ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_DefaultOpen))
 	{
 		glm::vec3 cameraPosition = m_Camera->GetPosition();
@@ -210,16 +279,7 @@ void Application::ProcessInput(float deltaTime)
 	}
 	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::E, true))
 	{
-		if (!m_WireframeMode)
-		{
-			m_WireframeMode = true;
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		}
-		else
-		{
-			m_WireframeMode = false;
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		}
+		m_WireframeMode = !m_WireframeMode;
 	}
 
 	// Move camera

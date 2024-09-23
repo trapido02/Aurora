@@ -37,10 +37,6 @@ namespace Aurora::Core {
 		// Load glad, should maybe be removed since this window class should ONLY handle the window, and not glad really.
 		gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
 
-		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
-			glViewport(0, 0, width, height);
-		});
-
 		// Load ImGui
 		ImGui::CreateContext();
 		ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
@@ -102,6 +98,16 @@ namespace Aurora::Core {
 		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) {
 			auto func = static_cast<std::function<void()>*>(glfwGetWindowUserPointer(window));
 			(*func)();
+		});
+	}
+
+	void Window::SetResizeCallback(std::function<void(int width, int height)> callback)
+	{
+		glfwSetWindowUserPointer(m_Window, new std::function<void(int width, int height)>(callback));
+
+		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
+			auto func = static_cast<std::function<void(int width, int height)>*>(glfwGetWindowUserPointer(window));
+			(*func)(width, height);
 		});
 	}
 

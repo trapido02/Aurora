@@ -31,6 +31,7 @@ namespace Aurora::Core {
 		void SetVsync(bool state);
 
 		void SetCloseCallback(std::function<void()> lambda);
+		void SetResizeCallback(std::function<void(int width, int height)> lambda);
 
 		bool GetKeyDown(KEYCODE keycode, bool once = false);
 		void GetMousePosition(double& x, double& y);
