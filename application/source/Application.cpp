@@ -55,8 +55,9 @@ void Application::Run()
 
 	m_Shader = new Aurora::Renderer::Shader("resources/shaders/shader.vert", "resources/shaders/shader.frag");
 	m_ScreenShader = new Aurora::Renderer::Shader("resources/shaders/shader_screen.vert", "resources/shaders/shader_screen.frag");
+	m_SkyboxShader = new Aurora::Renderer::Shader("resources/shaders/skybox.vert", "resources/shaders/skybox.frag");
 
-	m_Camera = new Aurora::Renderer::Camera(m_Window, 60.0f, 0.1f, 100.0f);
+	m_Camera = new Aurora::Renderer::Camera(m_Window, 60.0f, 0.1f, 1000.0f);
 	m_Camera->SetPosition(glm::vec3(-1.0f, 1.0f, 0.0f));
 
 	// Load models
@@ -77,10 +78,24 @@ void Application::Run()
 
 	m_Shader->Create();
 	m_ScreenShader->Create();
+	m_SkyboxShader->Create();
 	m_ScreenShader->SetUniform1i("screenTexture", 0);
+	m_SkyboxShader->SetUniform1i("skybox", 0);
 
 	m_Baseplate->Create();
 	m_Duck->Create();
+
+	std::vector<std::string> m_CubemapPaths = {
+		"resources/cubemaps/skybox/right.jpg",
+		"resources/cubemaps/skybox/left.jpg",
+		"resources/cubemaps/skybox/top.jpg",
+		"resources/cubemaps/skybox/bottom.jpg",
+		"resources/cubemaps/skybox/front.jpg",
+		"resources/cubemaps/skybox/back.jpg"
+	};
+
+	m_Skybox = new Aurora::Renderer::Skybox(m_CubemapPaths, *m_Camera);
+	m_Skybox->Create();
 
 	float timeSinceLastFrame = 0.0f;
 
@@ -127,6 +142,9 @@ void Application::Run()
 		m_Baseplate->Draw(*m_Shader);
 		m_Duck->Draw(*m_Shader);
 
+		// Draw skybox
+		m_Skybox->Draw(*m_SkyboxShader);
+
 		if (m_WireframeMode)
 		{
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);  // Enable wireframe mode
@@ -155,6 +173,8 @@ void Application::Destroy()
 	delete m_Window;
 	delete m_Renderer;
 	delete m_Shader;
+	delete m_ScreenShader;
+	delete m_SkyboxShader;
 	delete m_Camera;
 
 	delete m_Baseplate;
@@ -163,9 +183,10 @@ void Application::Destroy()
 	delete m_AmbientLight;
 	delete m_DirectionalLight;
 
-	delete m_Quad;
-
+	delete m_FrameQuad;
 	delete m_FrameBuffer;
+
+	delete m_Skybox;
 
 	delete m_Logger;
 }

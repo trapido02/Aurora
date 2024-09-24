@@ -9,6 +9,7 @@
 #include "renderer/IndexBuffer.h"
 #include "renderer/FrameBuffer.h"
 #include "renderer/Texture.h"
+#include "renderer/Skybox.h"
 #include "renderer/Model.h"
 #include "renderer/Mesh.h"
 #include "renderer/Camera.h"

@@ -17,6 +17,9 @@ namespace Aurora::Renderer {
 		~Camera();
 
 		void Update(Shader& shader);
+
+		glm::mat4 GetViewMatrix() const;
+		glm::mat4 GetProjectionMatrix() const;
 	private:
 		Core::Window* m_Window;
 
@@ -26,6 +29,9 @@ namespace Aurora::Renderer {
 
 		float m_Speed = 2.0f;
 		float m_Sensitivity = 50.0f;
+
+		glm::mat4 m_ViewMatrix = glm::mat4(1.0f);
+		glm::mat4 m_ProjectionMatrix = glm::mat4(1.0f);
 
 		void ProcessMouse();
 	};

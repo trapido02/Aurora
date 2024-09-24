@@ -19,9 +19,6 @@ namespace Aurora::Renderer {
 		{
 			ProcessMouse();
 		}
-		
-		glm::mat4 view = glm::mat4(1.0f);
-		glm::mat4 projection = glm::mat4(1.0f);
 
 		int windowWidth, windowHeight;
 		m_Window->GetSize(windowWidth, windowHeight);
@@ -33,12 +30,12 @@ namespace Aurora::Renderer {
 			glm::vec3 forward = Camera::GetLocalForwardVector();
 			glm::vec3 position = Camera::GetPosition();
 
-			view = glm::lookAt(position, position + forward, glm::vec3(0.0f, 1.0f, 0.0f));
-			projection = glm::perspective(glm::radians(m_Fov), (float)windowWidth / (float)windowHeight, m_NearPlane, m_FarPlane);
+			m_ViewMatrix = glm::lookAt(position, position + forward, glm::vec3(0.0f, 1.0f, 0.0f));
+			m_ProjectionMatrix = glm::perspective(glm::radians(m_Fov), (float)windowWidth / (float)windowHeight, m_NearPlane, m_FarPlane);
 
 			shader.Bind();
-			shader.SetUniformMatrix4fv("view", view);
-			shader.SetUniformMatrix4fv("projection", projection);
+			shader.SetUniformMatrix4fv("view", m_ViewMatrix);
+			shader.SetUniformMatrix4fv("projection", m_ProjectionMatrix);
 			shader.Unbind();
 		}
 	}
@@ -72,6 +69,16 @@ namespace Aurora::Renderer {
 		Camera::SetRotation(rotation);
 
 		m_Window->SetCursorPosition(((float)windowWidth / 2), ((float)windowHeight / 2));
+	}
+
+	glm::mat4 Camera::GetViewMatrix() const
+	{
+		return m_ViewMatrix;
+	}
+
+	glm::mat4 Camera::GetProjectionMatrix() const
+	{
+		return m_ProjectionMatrix;
 	}
 
 }

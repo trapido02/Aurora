@@ -48,6 +48,7 @@ private:
 
 	Aurora::Renderer::Shader* m_Shader = nullptr;
 	Aurora::Renderer::Shader* m_ScreenShader = nullptr;
+	Aurora::Renderer::Shader* m_SkyboxShader = nullptr;
 
 	Aurora::Renderer::Camera* m_Camera = nullptr;
 
@@ -61,9 +62,7 @@ private:
 
 	Aurora::Renderer::FrameBuffer* m_FrameBuffer = nullptr;
 
-	Aurora::Renderer::VertexArray* m_Vao = nullptr;
-	Aurora::Renderer::VertexBuffer* m_Vbo = nullptr;
-	Aurora::Renderer::IndexBuffer* m_Ibo = nullptr;
+	Aurora::Renderer::Skybox* m_Skybox = nullptr;
 
 	Aurora::Core::Log* m_Logger = nullptr;
 };
