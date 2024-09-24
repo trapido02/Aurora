@@ -14,5 +14,6 @@
 #include "renderer/Camera.h"
 #include "renderer/light/DirectionalLight.h"
 #include "renderer/light/AmbientLight.h"
+#include "renderer/primitives/Quad.h"
 #include "core/Window.h"
 #include "core/Log.h"

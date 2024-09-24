@@ -57,6 +57,8 @@ private:
 	Aurora::Renderer::AmbientLight* m_AmbientLight = nullptr;
 	Aurora::Renderer::DirectionalLight* m_DirectionalLight = nullptr;
 
+	Aurora::Renderer::Quad* m_FrameQuad = nullptr;
+
 	Aurora::Renderer::FrameBuffer* m_FrameBuffer = nullptr;
 
 	Aurora::Renderer::VertexArray* m_Vao = nullptr;

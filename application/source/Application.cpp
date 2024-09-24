@@ -66,6 +66,9 @@ void Application::Run()
 	m_AmbientLight = new Aurora::Renderer::AmbientLight(*m_Shader);
 	m_DirectionalLight = new Aurora::Renderer::DirectionalLight(*m_Shader);
 
+	m_FrameQuad = new Aurora::Renderer::Quad();
+	m_FrameQuad->Create();
+
 	int width, height;
 	m_Window->GetSize(width, height);
 
@@ -78,32 +81,6 @@ void Application::Run()
 
 	m_Baseplate->Create();
 	m_Duck->Create();
-
-	// Create quad
-	std::vector<Aurora::Renderer::Vertex> quadVertices = {
-		Aurora::Renderer::Vertex(glm::vec3(-1.0f, 1.0f, 0.0f), glm::vec2(0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f)),
-		Aurora::Renderer::Vertex(glm::vec3(-1.0f,-1.0f, 0.0f), glm::vec2(0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f)),
-		Aurora::Renderer::Vertex(glm::vec3(1.0f,-1.0f, 0.0f), glm::vec2(1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f)),
-		Aurora::Renderer::Vertex(glm::vec3(-1.0f, 1.0f, 0.0f), glm::vec2(0.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f)),
-		Aurora::Renderer::Vertex(glm::vec3(1.0f,-1.0f, 0.0f), glm::vec2(1.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.0f)),
-		Aurora::Renderer::Vertex(glm::vec3(1.0f, 1.0f, 0.0f), glm::vec2(1.0f, 1.0f), glm::vec3(0.0f, 0.0f, 0.0f))
-	};
-
-	std::vector<unsigned int> quadIndices = {
-		1, 2, 3,
-		3, 4, 5
-	};
-
-	m_Vao = new Aurora::Renderer::VertexArray();
-	m_Vbo = new Aurora::Renderer::VertexBuffer(quadVertices);
-	m_Ibo = new Aurora::Renderer::IndexBuffer(quadIndices);
-
-	m_Vao->Create();
-	m_Vbo->Create();
-	m_Ibo->Create();
-
-	m_Vao->AttachVertexBuffer(*m_Vbo);
-	m_Vao->AttachIndexBuffer(*m_Ibo);
 
 	float timeSinceLastFrame = 0.0f;
 
@@ -156,13 +133,7 @@ void Application::Run()
 		}
 
 		m_FrameBuffer->Unbind();
-
-		m_ScreenShader->Bind();
-		m_Vao->Bind();
-		glBindTexture(GL_TEXTURE_2D, m_FrameBuffer->GetColorAttachmentID());
-		glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(quadIndices.size()), GL_UNSIGNED_INT, nullptr);
-		m_Vao->Unbind();
-		m_ScreenShader->Unbind();
+		m_FrameQuad->Draw(*m_ScreenShader, m_FrameBuffer->GetColorAttachmentID());
 
 		Application::ImGuiRender();
 
@@ -191,6 +162,8 @@ void Application::Destroy()
 
 	delete m_AmbientLight;
 	delete m_DirectionalLight;
+
+	delete m_Quad;
 
 	delete m_FrameBuffer;
 
