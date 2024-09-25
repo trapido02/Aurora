@@ -33,7 +33,6 @@ void Application::Create()
 	m_Window->Create();
 	m_Window->SetCloseCallback([this]() { Application::Destroy(); });
 	m_Window->SetResizeCallback([this](int width, int height) {
-		INFO("Resized");
 		glViewport(0, 0, width, height);
 		m_FrameBuffer->Resize(width, height);
 	});
@@ -165,10 +164,20 @@ void Application::Destroy()
 	m_IsRunning = false;
 
 	m_Window->Destroy();
+
 	m_Shader->Destroy();
+	m_ScreenShader->Destroy();
+	m_SkyboxShader->Destroy();
 
 	m_Baseplate->Destroy();
 	m_Duck->Destroy();
+
+	m_FrameQuad->Destroy();
+	m_FrameBuffer->Destroy();
+
+	m_Skybox->Destroy();
+
+	m_Logger->Destroy();
 
 	delete m_Window;
 	delete m_Renderer;

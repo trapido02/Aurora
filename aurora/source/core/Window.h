@@ -17,6 +17,11 @@ namespace Aurora::Core {
 		F = GLFW_KEY_F
 	};
 
+	struct WindowCallbacks {
+		std::function<void()> closeCallback;
+		std::function<void(int, int)> resizeCallback;
+	};
+
 	class Window
 	{
 	public:
@@ -45,6 +50,8 @@ namespace Aurora::Core {
 		float GetFPS() { return m_FPS; }
 	private:
 		GLFWwindow* m_Window = nullptr;
+
+		WindowCallbacks m_Callbacks;
 
 		const char* m_Title;
 		int m_Width, m_Height;

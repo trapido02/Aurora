@@ -1,6 +1,6 @@
 #pragma once
 
-#include "SceneObject.h"
+#include "renderer/SceneObject.h"
 
 #include "renderer/VertexArray.h"
 #include "renderer/VertexBuffer.h"

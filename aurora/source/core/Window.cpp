@@ -93,21 +93,35 @@ namespace Aurora::Core {
 
 	void Window::SetCloseCallback(std::function<void()> callback)
 	{
-		glfwSetWindowUserPointer(m_Window, new std::function<void()>(callback));
+		m_Callbacks.closeCallback = callback;
+
+		glfwSetWindowUserPointer(m_Window, this);
 
 		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) {
-			auto func = static_cast<std::function<void()>*>(glfwGetWindowUserPointer(window));
-			(*func)();
+			INFO("Window should close");
+			auto windowObj = static_cast<Window*>(glfwGetWindowUserPointer(window));
+			
+			if (windowObj && windowObj->m_Callbacks.closeCallback)
+			{
+				windowObj->m_Callbacks.closeCallback();
+			}
 		});
 	}
 
 	void Window::SetResizeCallback(std::function<void(int width, int height)> callback)
 	{
-		glfwSetWindowUserPointer(m_Window, new std::function<void(int width, int height)>(callback));
+		m_Callbacks.resizeCallback = callback;
+
+		glfwSetWindowUserPointer(m_Window, this);
 
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
-			auto func = static_cast<std::function<void(int width, int height)>*>(glfwGetWindowUserPointer(window));
-			(*func)(width, height);
+			INFO("Window resize");
+			auto windowObj = static_cast<Window*>(glfwGetWindowUserPointer(window));
+
+			if (windowObj && windowObj->m_Callbacks.resizeCallback)
+			{
+				windowObj->m_Callbacks.resizeCallback(width, height);
+			}
 		});
 	}
 
