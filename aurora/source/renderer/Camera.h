@@ -17,6 +17,7 @@ namespace Aurora::Renderer {
 		~Camera();
 
 		void Update(Shader& shader);
+		void Resize(int width, int height);
 
 		glm::mat4 GetViewMatrix() const;
 		glm::mat4 GetProjectionMatrix() const;

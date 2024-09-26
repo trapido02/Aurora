@@ -18,13 +18,16 @@ namespace Aurora::Renderer {
 
 		void Resize(int width, int height);
 
+		int GetWidth() const;
+		int GetHeight() const;
+
 		unsigned int GetColorAttachmentID();
 		unsigned int GetID();
 	private:
 		unsigned int m_FrameBufferID = NULL;
 
-		unsigned int m_ColorAttachment;
-		unsigned int m_DepthAttachment;
+		unsigned int m_ColorAttachment = NULL;
+		unsigned int m_DepthAttachment = NULL;
 
 		int m_Width;
 		int m_Height;

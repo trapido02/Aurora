@@ -8,6 +8,16 @@
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
 
+/*
+*
+* Todo:
+* 
+* Entity component system.
+* Add support for saving and loading projects so i dont need to be pushing meshes and stuff to github
+* Find a solution to the camera class since right now its required to be calling the Resize method to set the camera perspective which should be done automatically if we're not using ImGui docking
+* 
+*/
+
 void GLAPIENTRY MessageCallback(
 	GLenum source,
 	GLenum type,
@@ -32,10 +42,6 @@ void Application::Create()
 	m_Window = new Aurora::Core::Window("Aurora", 720 * 16 / 9, 720);
 	m_Window->Create();
 	m_Window->SetCloseCallback([this]() { Application::Destroy(); });
-	m_Window->SetResizeCallback([this](int width, int height) {
-		glViewport(0, 0, width, height);
-		m_FrameBuffer->Resize(width, height);
-	});
 	m_Window->SetVsync(true);
 
 	// Setup logger
@@ -202,76 +208,122 @@ void Application::Destroy()
 
 void Application::ImGuiRender()
 {
-	unsigned int textureID = m_FrameBuffer->GetColorAttachmentID();
-	ImGui::Image((void*)textureID, ImVec2({ 256, 256 }), ImVec2({ 0, 1 }), ImVec2({ 1, 0 }));
+	ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
+	ImGuiViewport* viewport = ImGui::GetMainViewport();
+	ImGui::DockSpaceOverViewport(dockspace_id, viewport);
 
-	if (ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_DefaultOpen))
+	ImGui::ShowDemoWindow();
+
 	{
-		glm::vec3 cameraPosition = m_Camera->GetPosition();
-		glm::vec3 cameraRotation = glm::degrees(m_Camera->GetRotation());
-		glm::vec3 cameraSize = m_Camera->GetSize();
+		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+		ImGui::Begin("Viewport");
 
-		ImGui::PushID("Camera");
-		ImGui::Text("Position: (%.3f, %.3f, %.3f)", cameraPosition.x, cameraPosition.y, cameraPosition.z);
-		ImGui::Text("Rotation: (%.3f, %.3f, %.3f)", cameraRotation.x, cameraRotation.y, cameraRotation.z);
-		ImGui::Text("Size: (%.3f, %.3f, %.3f)", cameraSize.x, cameraSize.y, cameraSize.z);
-		ImGui::PopID();
+		ImVec2 viewportPanelSize = ImGui::GetContentRegionAvail();
+
+		if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
+		{
+			m_FrameBuffer->Resize((int)viewportPanelSize.x, (int)viewportPanelSize.y);
+			m_Camera->Resize(viewportPanelSize.x, viewportPanelSize.y);
+			m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
+		}
+
+		unsigned int textureID = m_FrameBuffer->GetColorAttachmentID();
+
+		ImGui::Image((void*)textureID, ImVec2{ viewportPanelSize.x, viewportPanelSize.y }, ImVec2(0, 1), ImVec2(1, 0));
+
+		ImGui::End();
+		ImGui::PopStyleVar();
 	}
 
-	if (ImGui::CollapsingHeader("Baseplate"))
 	{
-		glm::vec3 baseplatePosition = m_Baseplate->GetPosition();
-		glm::vec3 baseplateRotation = m_Baseplate->GetRotation();
-		glm::vec3 baseplateSize = m_Baseplate->GetSize();
-
-		ImGui::PushID("Baseplate");
-		ImGui::Text("Size: (%.3f, %.3f, %.3f)", baseplateSize.x, baseplateSize.y, baseplateSize.z);
-		ImGui::DragFloat3("Size", &m_BaseplateSize.x, 0.1f, 0.1f, 10.0f);
-		ImGui::Text("Position: (%.3f, %.3f, %.3f)", baseplatePosition.x, baseplatePosition.y, baseplatePosition.z);
-		ImGui::DragFloat3("Position", &m_BaseplatePosition.x, 0.1f, -10000.0f, 10000.0f);
-		ImGui::Text("Rotation: (%.3f, %.3f, %.3f)", baseplateRotation.x, baseplateRotation.y, baseplateRotation.z);
-		ImGui::DragFloat3("Rotation", &m_BaseplateRotation.x, 1.0f, -180.0f, 180.0f);
-		ImGui::PopID();
+		if (ImGui::BeginMainMenuBar())
+		{
+			if (ImGui::BeginMenu("File"))
+			{
+				if (ImGui::MenuItem("Exit"))
+				{
+					Application::Destroy();
+				}
+				ImGui::EndMenu();
+			}
+			ImGui::EndMainMenuBar();
+		}
 	}
 
-	if (ImGui::CollapsingHeader("Duck"))
 	{
-		glm::vec3 duckPosition = m_Duck->GetPosition();
-		glm::vec3 duckRotation = m_Duck->GetRotation();
-		glm::vec3 duckSize = m_Duck->GetSize();
+		ImGui::Begin("Debug window");
+		unsigned int textureID = m_FrameBuffer->GetColorAttachmentID();
+		ImGui::Image((void*)textureID, ImVec2({ 256, 256 }), ImVec2({ 0, 1 }), ImVec2({ 1, 0 }));
 
-		ImGui::PushID("Duck");
-		ImGui::Text("Size: (%.3f, %.3f, %.3f)", duckSize.x, duckSize.y, duckSize.z);
-		ImGui::DragFloat3("Size", &m_DuckSize.x, 0.1f, 0.1f, 10.0f);
-		ImGui::Text("Position: (%.3f, %.3f, %.3f)", duckPosition.x, duckPosition.y, duckPosition.z);
-		ImGui::DragFloat3("Position", &m_DuckPosition.x, 0.1f, -10000.0f, 10000.0f);
-		ImGui::Text("Rotation: (%.3f, %.3f, %.3f)", duckRotation.x, duckRotation.y, duckRotation.z);
-		ImGui::DragFloat3("Rotation", &m_DuckRotation.x, 1.0f, -180.0f, 180.0f);
-		ImGui::PopID();
+		if (ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_DefaultOpen))
+		{
+			glm::vec3 cameraPosition = m_Camera->GetPosition();
+			glm::vec3 cameraRotation = glm::degrees(m_Camera->GetRotation());
+			glm::vec3 cameraSize = m_Camera->GetSize();
+
+			ImGui::PushID("Camera");
+			ImGui::Text("Position: (%.3f, %.3f, %.3f)", cameraPosition.x, cameraPosition.y, cameraPosition.z);
+			ImGui::Text("Rotation: (%.3f, %.3f, %.3f)", cameraRotation.x, cameraRotation.y, cameraRotation.z);
+			ImGui::Text("Size: (%.3f, %.3f, %.3f)", cameraSize.x, cameraSize.y, cameraSize.z);
+			ImGui::PopID();
+		}
+
+		if (ImGui::CollapsingHeader("Baseplate"))
+		{
+			glm::vec3 baseplatePosition = m_Baseplate->GetPosition();
+			glm::vec3 baseplateRotation = m_Baseplate->GetRotation();
+			glm::vec3 baseplateSize = m_Baseplate->GetSize();
+
+			ImGui::PushID("Baseplate");
+			ImGui::Text("Size: (%.3f, %.3f, %.3f)", baseplateSize.x, baseplateSize.y, baseplateSize.z);
+			ImGui::DragFloat3("Size", &m_BaseplateSize.x, 0.1f, 0.1f, 10.0f);
+			ImGui::Text("Position: (%.3f, %.3f, %.3f)", baseplatePosition.x, baseplatePosition.y, baseplatePosition.z);
+			ImGui::DragFloat3("Position", &m_BaseplatePosition.x, 0.1f, -10000.0f, 10000.0f);
+			ImGui::Text("Rotation: (%.3f, %.3f, %.3f)", baseplateRotation.x, baseplateRotation.y, baseplateRotation.z);
+			ImGui::DragFloat3("Rotation", &m_BaseplateRotation.x, 1.0f, -180.0f, 180.0f);
+			ImGui::PopID();
+		}
+
+		if (ImGui::CollapsingHeader("Duck"))
+		{
+			glm::vec3 duckPosition = m_Duck->GetPosition();
+			glm::vec3 duckRotation = m_Duck->GetRotation();
+			glm::vec3 duckSize = m_Duck->GetSize();
+
+			ImGui::PushID("Duck");
+			ImGui::Text("Size: (%.3f, %.3f, %.3f)", duckSize.x, duckSize.y, duckSize.z);
+			ImGui::DragFloat3("Size", &m_DuckSize.x, 0.1f, 0.1f, 10.0f);
+			ImGui::Text("Position: (%.3f, %.3f, %.3f)", duckPosition.x, duckPosition.y, duckPosition.z);
+			ImGui::DragFloat3("Position", &m_DuckPosition.x, 0.1f, -10000.0f, 10000.0f);
+			ImGui::Text("Rotation: (%.3f, %.3f, %.3f)", duckRotation.x, duckRotation.y, duckRotation.z);
+			ImGui::DragFloat3("Rotation", &m_DuckRotation.x, 1.0f, -180.0f, 180.0f);
+			ImGui::PopID();
+		}
+
+		if (ImGui::CollapsingHeader("Ambient Light"))
+		{
+			ImGui::PushID("AmbientLight");
+			ImGui::DragFloat3("Color", &m_AmbientLightColor.x, 0.1f, 0.0f, 1.0f);
+			ImGui::DragFloat("Strength", &m_AmbientLightStrength, 0.1f, 0.0f, 10.0f);
+			ImGui::PopID();
+		}
+
+		if (ImGui::CollapsingHeader("Directional Light"))
+		{
+			ImGui::PushID("DirectionalLight");
+			ImGui::DragFloat3("Direction", &m_DirectionalLightDirection.x, 0.1f, -1.0f, 1.0f);
+			ImGui::DragFloat3("Color", &m_DirectionalLightColor.x, 0.1f, 0.0f, 1.0f);
+			ImGui::DragFloat("Strength", &m_DirectionalLightStrength, 0.1f, 0.0f, 10.0f);
+			ImGui::PopID();
+		}
+
+		// Debug info
+		ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
+		ImGui::Text("Frame Time: %.3f ms", 1000.0f / ImGui::GetIO().Framerate);
+		ImGui::Separator();
+		ImGui::Text("OpenGL Version: %s", glGetString(GL_VERSION));
+		ImGui::End();
 	}
-
-	if (ImGui::CollapsingHeader("Ambient Light"))
-	{
-		ImGui::PushID("AmbientLight");
-		ImGui::DragFloat3("Color", &m_AmbientLightColor.x, 0.1f, 0.0f, 1.0f);
-		ImGui::DragFloat("Strength", &m_AmbientLightStrength, 0.1f, 0.0f, 10.0f);
-		ImGui::PopID();
-	}
-
-	if (ImGui::CollapsingHeader("Directional Light"))
-	{
-		ImGui::PushID("DirectionalLight");
-		ImGui::DragFloat3("Direction", &m_DirectionalLightDirection.x, 0.1f, -1.0f, 1.0f);
-		ImGui::DragFloat3("Color", &m_DirectionalLightColor.x, 0.1f, 0.0f, 1.0f);
-		ImGui::DragFloat("Strength", &m_DirectionalLightStrength, 0.1f, 0.0f, 10.0f);
-		ImGui::PopID();
-	}
-
-	// Debug info
-	ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
-	ImGui::Text("Frame Time: %.3f ms", 1000.0f / ImGui::GetIO().Framerate);
-	ImGui::Separator();
-	ImGui::Text("OpenGL Version: %s", glGetString(GL_VERSION));
 }
 
 void Application::ProcessInput(float deltaTime)

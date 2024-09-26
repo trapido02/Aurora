@@ -31,13 +31,18 @@ namespace Aurora::Renderer {
 			glm::vec3 position = Camera::GetPosition();
 
 			m_ViewMatrix = glm::lookAt(position, position + forward, glm::vec3(0.0f, 1.0f, 0.0f));
-			m_ProjectionMatrix = glm::perspective(glm::radians(m_Fov), (float)windowWidth / (float)windowHeight, m_NearPlane, m_FarPlane);
+			//m_ProjectionMatrix = glm::perspective(glm::radians(m_Fov), (float)windowWidth / (float)windowHeight, m_NearPlane, m_FarPlane);
 
 			shader.Bind();
 			shader.SetUniformMatrix4fv("view", m_ViewMatrix);
 			shader.SetUniformMatrix4fv("projection", m_ProjectionMatrix);
 			shader.Unbind();
 		}
+	}
+
+	void Camera::Resize(int width, int height)
+	{
+		m_ProjectionMatrix = glm::perspective(glm::radians(m_Fov), (float)width / (float)height, m_NearPlane, m_FarPlane);
 	}
 
 	void Camera::ProcessMouse()

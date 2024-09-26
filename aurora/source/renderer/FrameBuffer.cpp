@@ -58,6 +58,7 @@ namespace Aurora::Renderer {
 	void FrameBuffer::Bind()
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, m_FrameBufferID);
+		glViewport(0, 0, m_Width, m_Height);
 	}
 
 	void FrameBuffer::Unbind()
@@ -71,6 +72,15 @@ namespace Aurora::Renderer {
 		m_Height = height;
 
 		FrameBuffer::Create();
+	}
+
+	int FrameBuffer::GetWidth() const
+	{
+		return m_Width;
+	}
+	int FrameBuffer::GetHeight() const
+	{
+		return m_Height;
 	}
 
 	unsigned int FrameBuffer::GetColorAttachmentID()
