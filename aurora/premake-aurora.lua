@@ -27,7 +27,8 @@ project "aurora"
 		"vendor/assimp/include",
 		"vendor/glm",
 		"vendor/spdlog/include",
-		"vendor/imgui"
+		"vendor/imgui",
+		"vendor/entt"
 	}
 
 	libdirs

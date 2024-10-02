@@ -1,5 +1,7 @@
 #include "pch.h"
 
+#include <glad/glad.h>
+
 #include "Mesh.h"
 
 namespace Aurora::Renderer {

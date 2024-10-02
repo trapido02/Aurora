@@ -1,4 +1,9 @@
+#include <glad/glad.h>
+
 #include "Application.h"
+
+#include "scenes/MainScene.h"
+#include "scenes/TestScene.h"
 
 #include <glm.hpp>
 #include <gtc/matrix_transform.hpp>
@@ -7,16 +12,6 @@
 #include "imgui/imgui.h"
 #include "imgui/imgui_impl_glfw.h"
 #include "imgui/imgui_impl_opengl3.h"
-
-/*
-*
-* Todo:
-* 
-* Entity component system.
-* Add support for saving and loading projects so i dont need to be pushing meshes and stuff to github
-* Find a solution to the camera class since right now its required to be calling the Resize method to set the camera perspective which should be done automatically if we're not using ImGui docking
-* 
-*/
 
 void GLAPIENTRY MessageCallback(
 	GLenum source,
@@ -39,10 +34,18 @@ void GLAPIENTRY MessageCallback(
 
 void Application::Create()
 {
-	m_Window = new Aurora::Core::Window("Aurora", 720 * 16 / 9, 720);
+	Aurora::Core::WindowFlags windowFlags =
+		Aurora::Core::WindowFlags::VSYNC_ENABLE |
+		Aurora::Core::WindowFlags::DOCKING_ENABLE |
+		Aurora::Core::WindowFlags::VIEWPORT_ENABLE;
+
+	m_Window = new Aurora::Core::Window("Aurora", 720 * 16 / 9, 720, windowFlags);
 	m_Window->Create();
 	m_Window->SetCloseCallback([this]() { Application::Destroy(); });
-	m_Window->SetVsync(true);
+	m_Window->SetResizeCallback([this](int width, int height) {
+		glViewport(0, 0, width, height);
+		m_FrameBuffer->Resize(width, height);
+	});
 
 	// Setup logger
 	m_Logger = new Aurora::Core::Log();
@@ -58,19 +61,15 @@ void Application::Run()
 
 	glDebugMessageCallback(MessageCallback, 0);
 
+	// Create and load scene
+	m_SceneManager.CreateScene<MainScene>("MainScene");
+	m_SceneManager.CreateScene<TestScene>("TestScene");
+
 	m_Shader = new Aurora::Renderer::Shader("resources/shaders/shader.vert", "resources/shaders/shader.frag");
 	m_ScreenShader = new Aurora::Renderer::Shader("resources/shaders/shader_screen.vert", "resources/shaders/shader_screen.frag");
-	m_SkyboxShader = new Aurora::Renderer::Shader("resources/shaders/skybox.vert", "resources/shaders/skybox.frag");
 
-	m_Camera = new Aurora::Renderer::Camera(m_Window, 60.0f, 0.1f, 1000.0f);
-	m_Camera->SetPosition(glm::vec3(-1.0f, 1.0f, 0.0f));
-
-	// Load models
-	m_Baseplate = new Aurora::Renderer::Model("resources/models/baseplate.gltf");
-	m_Duck = new Aurora::Renderer::Model("resources/models/Duck.gltf");
-
-	m_AmbientLight = new Aurora::Renderer::AmbientLight(*m_Shader);
-	m_DirectionalLight = new Aurora::Renderer::DirectionalLight(*m_Shader);
+	// Load Main scene
+	m_SceneManager.LoadScene("MainScene", m_Window, m_Shader, m_FrameBuffer);
 
 	m_FrameQuad = new Aurora::Renderer::Quad();
 	m_FrameQuad->Create();
@@ -83,24 +82,7 @@ void Application::Run()
 
 	m_Shader->Create();
 	m_ScreenShader->Create();
-	m_SkyboxShader->Create();
 	m_ScreenShader->SetUniform1i("screenTexture", 0);
-	m_SkyboxShader->SetUniform1i("skybox", 0);
-
-	m_Baseplate->Create();
-	m_Duck->Create();
-
-	std::vector<std::string> m_CubemapPaths = {
-		"resources/cubemaps/skybox/right.jpg",
-		"resources/cubemaps/skybox/left.jpg",
-		"resources/cubemaps/skybox/top.jpg",
-		"resources/cubemaps/skybox/bottom.jpg",
-		"resources/cubemaps/skybox/front.jpg",
-		"resources/cubemaps/skybox/back.jpg"
-	};
-
-	m_Skybox = new Aurora::Renderer::Skybox(m_CubemapPaths, *m_Camera);
-	m_Skybox->Create();
 
 	float timeSinceLastFrame = 0.0f;
 
@@ -114,54 +96,43 @@ void Application::Run()
 		m_Renderer->ClearColor(0.7f, 0.8f, 1.0f, 1.0f);
 
 		m_FrameBuffer->Bind();
-
 		m_Renderer->Clear();
 
 		m_Window->PreUpdate();
 
-		m_Camera->Update(*m_Shader);
-
-		// Update ambient light
-		m_AmbientLight->SetColor(m_AmbientLightColor);
-		m_AmbientLight->SetStrength(m_AmbientLightStrength);
-
-		// Update directional light
-		m_DirectionalLight->SetDirection(m_DirectionalLightDirection);
-		m_DirectionalLight->SetColor(m_DirectionalLightColor);
-		m_DirectionalLight->SetStrength(m_DirectionalLightStrength);
-
-		// Scale the models and draw it
-		m_Baseplate->SetSize(m_BaseplateSize);
-		m_Baseplate->SetPosition(m_BaseplatePosition);
-		m_Baseplate->SetRotation(glm::radians(m_BaseplateRotation));
-
-		m_Duck->SetSize(m_DuckSize);
-		m_Duck->SetPosition(m_DuckPosition);
-		m_Duck->SetRotation(glm::radians(m_DuckRotation));
-
 		if (m_WireframeMode)
 		{
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);  // Enable wireframe mode
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		}
 
-		m_Baseplate->Draw(*m_Shader);
-		m_Duck->Draw(*m_Shader);
-
-		// Draw skybox
-		m_Skybox->Draw(*m_SkyboxShader);
+		m_SceneManager.Update(m_Window, m_Shader, m_FrameBuffer, deltaTime);
 
 		if (m_WireframeMode)
 		{
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);  // Enable wireframe mode
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		}
 
 		m_FrameBuffer->Unbind();
 		m_FrameQuad->Draw(*m_ScreenShader, m_FrameBuffer->GetColorAttachmentID());
 
 		Application::ImGuiRender();
-
 		m_Window->PostUpdate();
-		Application::ProcessInput(deltaTime);
+
+		if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::ESCAPE))
+		{
+			Application::Destroy();
+		}
+		if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::E, true))
+		{
+			if (m_WireframeMode)
+			{
+				m_WireframeMode = false;
+			}
+			else
+			{
+				m_WireframeMode = true;
+			}
+		}
 	}
 }
 
@@ -169,40 +140,23 @@ void Application::Destroy()
 {
 	m_IsRunning = false;
 
-	m_Window->Destroy();
+	m_SceneManager.UnloadScene(m_Window, m_Shader, m_FrameBuffer);
 
 	m_Shader->Destroy();
 	m_ScreenShader->Destroy();
-	m_SkyboxShader->Destroy();
-
-	m_Baseplate->Destroy();
-	m_Duck->Destroy();
+	delete m_Shader;
+	delete m_ScreenShader;
 
 	m_FrameQuad->Destroy();
 	m_FrameBuffer->Destroy();
-
-	m_Skybox->Destroy();
-
-	m_Logger->Destroy();
-
-	delete m_Window;
-	delete m_Renderer;
-	delete m_Shader;
-	delete m_ScreenShader;
-	delete m_SkyboxShader;
-	delete m_Camera;
-
-	delete m_Baseplate;
-	delete m_Duck;
-
-	delete m_AmbientLight;
-	delete m_DirectionalLight;
-
 	delete m_FrameQuad;
 	delete m_FrameBuffer;
 
-	delete m_Skybox;
+	m_Window->Destroy();
+	m_Logger->Destroy();
 
+	delete m_Renderer;
+	delete m_Window;
 	delete m_Logger;
 }
 
@@ -211,8 +165,6 @@ void Application::ImGuiRender()
 	ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 	ImGuiViewport* viewport = ImGui::GetMainViewport();
 	ImGui::DockSpaceOverViewport(dockspace_id, viewport);
-
-	ImGui::ShowDemoWindow();
 
 	{
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
@@ -223,7 +175,7 @@ void Application::ImGuiRender()
 		if (m_ViewportSize != *((glm::vec2*)&viewportPanelSize))
 		{
 			m_FrameBuffer->Resize((int)viewportPanelSize.x, (int)viewportPanelSize.y);
-			m_Camera->Resize(viewportPanelSize.x, viewportPanelSize.y);
+			//m_Camera->Resize(viewportPanelSize.x, viewportPanelSize.y);
 			m_ViewportSize = { viewportPanelSize.x, viewportPanelSize.y };
 		}
 
@@ -251,136 +203,107 @@ void Application::ImGuiRender()
 	}
 
 	{
-		ImGui::Begin("Debug window");
-		unsigned int textureID = m_FrameBuffer->GetColorAttachmentID();
-		ImGui::Image((void*)textureID, ImVec2({ 256, 256 }), ImVec2({ 0, 1 }), ImVec2({ 1, 0 }));
+		auto activeScene = m_SceneManager.GetCurrentScene();
+		if (activeScene) {
+			entt::registry& registry = activeScene->GetRegistry();
 
-		if (ImGui::CollapsingHeader("Camera", ImGuiTreeNodeFlags_DefaultOpen))
+			ImGui::Begin("Entity List");
+
+			auto view = registry.view<
+				Aurora::Scene::TransformComponent,
+				Aurora::Scene::CameraComponent,
+				Aurora::Scene::AmbientLightComponent,
+				Aurora::Scene::DirectionalLightComponent
+			>();
+
+			for (auto entity : registry.view<entt::entity>())
+			{
+				auto entityId = static_cast<int>(entity);
+				if (ImGui::TreeNode(("Entity " + std::to_string(entityId)).c_str()))
+				{
+					if (registry.all_of<Aurora::Scene::TransformComponent>(entity))
+					{
+						auto& transformComponent = view.get<Aurora::Scene::TransformComponent>(entity);
+						if (ImGui::TreeNode("Transform")) {
+							ImGui::SliderFloat3("Position", &transformComponent.position.x, -10.0f, 10.0f);
+
+							glm::vec3 rotationInDegrees = glm::degrees(transformComponent.rotation);
+							ImGui::SliderFloat3("Rotation", &rotationInDegrees.x, -180.0f, 180.0f);
+							transformComponent.rotation = glm::radians(rotationInDegrees);
+
+							ImGui::SliderFloat3("Scale", &transformComponent.size.x, 0.1f, 10.0f);
+							ImGui::TreePop();
+						}
+					}
+
+					if (registry.all_of<Aurora::Scene::CameraComponent>(entity))
+					{
+						auto& cameraComponent = view.get<Aurora::Scene::CameraComponent>(entity);
+						if (ImGui::TreeNode("Camera")) {
+							ImGui::SliderFloat("FOV", &cameraComponent.fov, 0.0f, 180.0f);
+							ImGui::InputFloat("Near Plane", &cameraComponent.nearPlane, 1.0f, 10.0f);
+							ImGui::InputFloat("Far Plane", &cameraComponent.farPlane, 1.0f, 10.0f);
+							ImGui::TreePop();
+						}
+					}
+
+					if (registry.all_of<Aurora::Scene::AmbientLightComponent>(entity))
+					{
+						auto& ambientLightComponent = view.get<Aurora::Scene::AmbientLightComponent>(entity);
+						if (ImGui::TreeNode("Light")) {
+							ImGui::DragFloat3("Color", &ambientLightComponent.color.x, 0.1f, 0.0f, 1.0f);
+							ImGui::DragFloat("Strength", &ambientLightComponent.strength, 0.1f, 0.0f, 10.0f);
+							ImGui::TreePop();
+						}
+					}
+
+					if (registry.all_of<Aurora::Scene::DirectionalLightComponent>(entity))
+					{
+						auto& directionalLightComponent = view.get<Aurora::Scene::DirectionalLightComponent>(entity);
+						if (ImGui::TreeNode("Light")) {
+							ImGui::DragFloat3("Direction", &directionalLightComponent.direction.x, 0.1f, -1.0f, 1.0f);
+							ImGui::DragFloat3("Color", &directionalLightComponent.color.x, 0.1f, 0.0f, 1.0f);
+							ImGui::DragFloat("Strength", &directionalLightComponent.strength, 0.1f, 0.0f, 10.0f);
+							ImGui::TreePop();
+						}
+					}
+					ImGui::TreePop();
+				}
+			}
+
+			ImGui::End();
+		}
+	}
+
+	{
+		auto scenes = m_SceneManager.GetScenes();
+
+		ImGui::Begin("Scenes");
+
+		for (const auto& pair : scenes)
 		{
-			glm::vec3 cameraPosition = m_Camera->GetPosition();
-			glm::vec3 cameraRotation = glm::degrees(m_Camera->GetRotation());
-			glm::vec3 cameraSize = m_Camera->GetSize();
+			const std::string& sceneName = pair.first;
 
-			ImGui::PushID("Camera");
-			ImGui::Text("Position: (%.3f, %.3f, %.3f)", cameraPosition.x, cameraPosition.y, cameraPosition.z);
-			ImGui::Text("Rotation: (%.3f, %.3f, %.3f)", cameraRotation.x, cameraRotation.y, cameraRotation.z);
-			ImGui::Text("Size: (%.3f, %.3f, %.3f)", cameraSize.x, cameraSize.y, cameraSize.z);
+			ImGui::PushID(sceneName.c_str());
+			ImGui::Text(sceneName.c_str());
+			ImGui::SameLine();
+			if (ImGui::Button("Load"))
+			{
+				m_SceneManager.LoadScene(sceneName, m_Window, m_Shader, m_FrameBuffer);
+			}
 			ImGui::PopID();
 		}
 
-		if (ImGui::CollapsingHeader("Baseplate"))
-		{
-			glm::vec3 baseplatePosition = m_Baseplate->GetPosition();
-			glm::vec3 baseplateRotation = m_Baseplate->GetRotation();
-			glm::vec3 baseplateSize = m_Baseplate->GetSize();
+		ImGui::End();
+	}
 
-			ImGui::PushID("Baseplate");
-			ImGui::Text("Size: (%.3f, %.3f, %.3f)", baseplateSize.x, baseplateSize.y, baseplateSize.z);
-			ImGui::DragFloat3("Size", &m_BaseplateSize.x, 0.1f, 0.1f, 10.0f);
-			ImGui::Text("Position: (%.3f, %.3f, %.3f)", baseplatePosition.x, baseplatePosition.y, baseplatePosition.z);
-			ImGui::DragFloat3("Position", &m_BaseplatePosition.x, 0.1f, -10000.0f, 10000.0f);
-			ImGui::Text("Rotation: (%.3f, %.3f, %.3f)", baseplateRotation.x, baseplateRotation.y, baseplateRotation.z);
-			ImGui::DragFloat3("Rotation", &m_BaseplateRotation.x, 1.0f, -180.0f, 180.0f);
-			ImGui::PopID();
-		}
-
-		if (ImGui::CollapsingHeader("Duck"))
-		{
-			glm::vec3 duckPosition = m_Duck->GetPosition();
-			glm::vec3 duckRotation = m_Duck->GetRotation();
-			glm::vec3 duckSize = m_Duck->GetSize();
-
-			ImGui::PushID("Duck");
-			ImGui::Text("Size: (%.3f, %.3f, %.3f)", duckSize.x, duckSize.y, duckSize.z);
-			ImGui::DragFloat3("Size", &m_DuckSize.x, 0.1f, 0.1f, 10.0f);
-			ImGui::Text("Position: (%.3f, %.3f, %.3f)", duckPosition.x, duckPosition.y, duckPosition.z);
-			ImGui::DragFloat3("Position", &m_DuckPosition.x, 0.1f, -10000.0f, 10000.0f);
-			ImGui::Text("Rotation: (%.3f, %.3f, %.3f)", duckRotation.x, duckRotation.y, duckRotation.z);
-			ImGui::DragFloat3("Rotation", &m_DuckRotation.x, 1.0f, -180.0f, 180.0f);
-			ImGui::PopID();
-		}
-
-		if (ImGui::CollapsingHeader("Ambient Light"))
-		{
-			ImGui::PushID("AmbientLight");
-			ImGui::DragFloat3("Color", &m_AmbientLightColor.x, 0.1f, 0.0f, 1.0f);
-			ImGui::DragFloat("Strength", &m_AmbientLightStrength, 0.1f, 0.0f, 10.0f);
-			ImGui::PopID();
-		}
-
-		if (ImGui::CollapsingHeader("Directional Light"))
-		{
-			ImGui::PushID("DirectionalLight");
-			ImGui::DragFloat3("Direction", &m_DirectionalLightDirection.x, 0.1f, -1.0f, 1.0f);
-			ImGui::DragFloat3("Color", &m_DirectionalLightColor.x, 0.1f, 0.0f, 1.0f);
-			ImGui::DragFloat("Strength", &m_DirectionalLightStrength, 0.1f, 0.0f, 10.0f);
-			ImGui::PopID();
-		}
-
+	{
 		// Debug info
+		ImGui::Begin("Debug window");
 		ImGui::Text("FPS: %.1f", ImGui::GetIO().Framerate);
 		ImGui::Text("Frame Time: %.3f ms", 1000.0f / ImGui::GetIO().Framerate);
 		ImGui::Separator();
 		ImGui::Text("OpenGL Version: %s", glGetString(GL_VERSION));
 		ImGui::End();
-	}
-}
-
-void Application::ProcessInput(float deltaTime)
-{
-	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::ESCAPE))
-	{
-		Application::Destroy();
-	}
-	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::E, true))
-	{
-		m_WireframeMode = !m_WireframeMode;
-	}
-
-	// Move camera
-	glm::vec3 direction(0.0f);
-	bool shouldMove = false;
-
-	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::W))
-	{
-		glm::vec3 forward = m_Camera->GetLocalForwardVector();
-		direction += forward;
-		shouldMove = true;
-	}
-	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::S))
-	{
-		glm::vec3 forward = m_Camera->GetLocalForwardVector();
-		direction -= forward;
-		shouldMove = true;
-	}
-	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::A))
-	{
-		glm::vec3 right = m_Camera->GetLocalRightVector();
-		direction -= right;
-		shouldMove = true;
-	}
-	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::D))
-	{
-		glm::vec3 right = m_Camera->GetLocalRightVector();
-		direction += right;
-		shouldMove = true;
-	}
-
-	if (shouldMove && (direction != glm::vec3(0.0f, 0.0f, 0.0f)))
-	{
-		m_Camera->Translate(glm::normalize(direction), 5.0f, deltaTime);
-	}
-
-	// Unlock/lock mouse cursor
-	if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::F, true))
-	{
-		if (!m_Window->IsMouseLocked())
-		{
-			m_Window->LockMouseCursor();
-		}
-		else
-		{
-			m_Window->UnlockMouseCursor();
-		}
 	}
 }

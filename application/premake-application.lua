@@ -22,7 +22,8 @@ project "application"
 		"../aurora/vendor/assimp/include",
 		"../aurora/vendor/glm",
 		"../aurora/vendor/spdlog/include",
-		"../aurora/vendor/imgui"
+		"../aurora/vendor/imgui",
+		"../aurora/vendor/entt"
 	}
 
 	links

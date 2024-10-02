@@ -1,7 +1,5 @@
 #pragma once
 
-#include <glad/glad.h>
-
 #include <string>
 
 #include <glm.hpp>
@@ -14,6 +12,7 @@ namespace Aurora::Renderer {
 	{
 	public:
 		Shader(const char* vertexShaderPath, const char* fragmentShaderPath);
+		Shader();
 		~Shader();
 
 		void Create();

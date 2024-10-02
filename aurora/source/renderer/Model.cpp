@@ -9,6 +9,11 @@ namespace Aurora::Renderer {
 	{
 	}
 
+	Model::Model()
+		: m_ModelPath("")
+	{
+	}
+
 	Model::~Model()
 	{
 	}
@@ -39,12 +44,10 @@ namespace Aurora::Renderer {
 		}
 	}
 
-	void Model::Draw(Shader& shader)
+	void Model::Draw(Shader& shader, glm::mat4 transform)
 	{ 
-		glm::mat4 model = Model::GetTransformMatrix();
-
 		shader.Bind();
-		shader.SetUniformMatrix4fv("model", model);
+		shader.SetUniformMatrix4fv("model", transform);
 		shader.Unbind();
 
 		for (unsigned int i = 0; i < m_Meshes.size(); i++)

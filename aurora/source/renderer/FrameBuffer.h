@@ -17,9 +17,7 @@ namespace Aurora::Renderer {
 		void Unbind();
 
 		void Resize(int width, int height);
-
-		int GetWidth() const;
-		int GetHeight() const;
+		void GetSize(int& width, int& height);
 
 		unsigned int GetColorAttachmentID();
 		unsigned int GetID();
@@ -29,8 +27,7 @@ namespace Aurora::Renderer {
 		unsigned int m_ColorAttachment = NULL;
 		unsigned int m_DepthAttachment = NULL;
 
-		int m_Width;
-		int m_Height;
+		int m_Width, m_Height;
 	};
 
 }

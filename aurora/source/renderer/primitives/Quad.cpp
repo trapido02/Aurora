@@ -1,5 +1,7 @@
 #include "pch.h"
 
+#include <glad/glad.h>
+
 #include "Quad.h"
 
 namespace Aurora::Renderer {
@@ -49,7 +51,11 @@ namespace Aurora::Renderer {
 
 	void Quad::Draw(Shader& shader, unsigned int frameBufferID)
 	{
-		glm::mat4 model = Quad::GetTransformMatrix();
+		glm::mat4 model = glm::mat4(1.0f);
+		model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+		model = glm::rotate(model, glm::radians(0.0f), glm::vec3(0.0f, 0.0f, 1.0f));
+		model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+
 		shader.Bind();
 		shader.SetUniformMatrix4fv("model", model);
 		m_VertexArray->Bind();

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "renderer/SceneObject.h"
-
 #include "renderer/VertexArray.h"
 #include "renderer/VertexBuffer.h"
 #include "renderer/IndexBuffer.h"
@@ -9,7 +7,7 @@
 
 namespace Aurora::Renderer {
 
-	class Quad : public SceneObject
+	class Quad
 	{
 	public:
 		Quad();

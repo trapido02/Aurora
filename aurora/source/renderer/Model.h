@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Mesh.h"
-#include "SceneObject.h"
 
 #include <vector>
 #include <memory>
@@ -14,16 +13,17 @@
 
 namespace Aurora::Renderer {
 
-	class Model : public SceneObject
+	class Model
 	{
 	public:
 		Model(std::string modelPath);
+		Model();
 		~Model();
 
 		void Create();
 		void Destroy();
 
-		void Draw(Shader& shader);
+		void Draw(Shader& shader, glm::mat4 transformationMatrix);
 	private:
 		std::vector<Mesh> m_Meshes;
 		std::string m_Directory;

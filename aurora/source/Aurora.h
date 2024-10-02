@@ -2,6 +2,20 @@
 
 #include <imgui/imgui.h>
 
+#include "scene/Scene.h"
+#include "scene/SceneManager.h"
+
+// Components
+#include "scene/components/TransformComponent.h"
+#include "scene/components/MeshComponent.h"
+#include "scene/components/CameraComponent.h"
+#include "scene/components/AmbientLightComponent.h"
+
+// Systems
+#include "scene/systems/RenderSystem.h"
+#include "scene/systems/CameraSystem.h"
+#include "scene/systems/LightSystem.h"
+
 #include "renderer/Shader.h"
 #include "renderer/Renderer.h"
 #include "renderer/VertexArray.h"

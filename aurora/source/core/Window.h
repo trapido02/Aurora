@@ -17,15 +17,31 @@ namespace Aurora::Core {
 		F = GLFW_KEY_F
 	};
 
-	struct WindowCallbacks {
+	struct WindowCallbacks
+	{
 		std::function<void()> closeCallback;
 		std::function<void(int, int)> resizeCallback;
 	};
 
+	enum class WindowFlags : unsigned int
+	{
+		VSYNC_ENABLE = 1 << 0,
+		DOCKING_ENABLE = 1 << 1,
+		VIEWPORT_ENABLE = 1 << 2
+	};
+
+	inline WindowFlags operator|(WindowFlags a, WindowFlags b) {
+		return static_cast<WindowFlags>(static_cast<unsigned int>(a) | static_cast<unsigned int>(b));
+	}
+
+	inline bool operator&(WindowFlags a, WindowFlags b) {
+		return static_cast<unsigned int>(a) & static_cast<unsigned int>(b);
+	}
+
 	class Window
 	{
 	public:
-		Window(const char* title, int width, int height);
+		Window(const char* title, int width, int height, WindowFlags windowFlags = WindowFlags(0));
 		~Window();
 
 		void Create();
@@ -33,7 +49,6 @@ namespace Aurora::Core {
 
 		void PreUpdate();
 		void PostUpdate();
-		void SetVsync(bool state);
 
 		void SetCloseCallback(std::function<void()> lambda);
 		void SetResizeCallback(std::function<void(int width, int height)> lambda);
@@ -52,12 +67,12 @@ namespace Aurora::Core {
 		GLFWwindow* m_Window = nullptr;
 
 		WindowCallbacks m_Callbacks;
+		WindowFlags m_WindowFlags;
 
 		const char* m_Title;
 		int m_Width, m_Height;
 
-		bool m_Vsync = false;
-		bool m_MouseLocked = true;
+		bool m_MouseLocked = false;
 
 		double m_PreviousTime = glfwGetTime();
 		int m_FrameCount = 0;

@@ -54,8 +54,8 @@ std::vector<Aurora::Renderer::Vertex> cubeVertices = {
 
 namespace Aurora::Renderer {
 
-	Skybox::Skybox(std::vector<std::string> texturePaths, Camera& camera)
-		: m_TexturePaths(texturePaths), m_Camera(camera)
+	Skybox::Skybox(std::vector<std::string> texturePaths)
+		: m_TexturePaths(texturePaths)
 	{
 	}
 
@@ -84,16 +84,15 @@ namespace Aurora::Renderer {
 		m_Cubemap->Destroy();
 	}
 
-	void Skybox::Draw(Shader& shader)
+	void Skybox::Draw(Shader& shader, glm::mat4 viewMatrix, glm::mat4 projectionMatrix)
 	{
 		glDepthFunc(GL_LEQUAL);
 		shader.Bind();
 
-		glm::mat4 view = glm::mat4(glm::mat3(m_Camera.GetViewMatrix()));;
-		glm::mat4 projection = m_Camera.GetProjectionMatrix();
+		glm::mat4 view = glm::mat4(glm::mat3(viewMatrix));;
 
 		shader.SetUniformMatrix4fv("view", view);
-		shader.SetUniformMatrix4fv("projection", projection);
+		shader.SetUniformMatrix4fv("projection", projectionMatrix);
 
 		m_VertexArray->Bind();
 		m_Cubemap->SetActiveTexture(0);

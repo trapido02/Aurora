@@ -11,16 +11,15 @@ namespace Aurora::Renderer {
 	class Skybox
 	{
 	public:
-		Skybox(std::vector<std::string> texturePaths, Camera& camera);
+		Skybox(std::vector<std::string> texturePaths);
 		~Skybox();
 
 		void Create();
 		void Destroy();
 
-		void Draw(Shader& shader);
+		void Draw(Shader& shader, glm::mat4 viewMatrix, glm::mat4 projectionMatrix);
 	private:
 		std::vector<std::string> m_TexturePaths;
-		Camera& m_Camera;
 
 		Cubemap* m_Cubemap = nullptr;
 		VertexArray* m_VertexArray = nullptr;

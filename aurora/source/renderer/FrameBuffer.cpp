@@ -74,13 +74,10 @@ namespace Aurora::Renderer {
 		FrameBuffer::Create();
 	}
 
-	int FrameBuffer::GetWidth() const
+	void FrameBuffer::GetSize(int& width, int& height)
 	{
-		return m_Width;
-	}
-	int FrameBuffer::GetHeight() const
-	{
-		return m_Height;
+		width = m_Width;
+		height = m_Height;
 	}
 
 	unsigned int FrameBuffer::GetColorAttachmentID()

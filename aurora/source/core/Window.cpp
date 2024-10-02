@@ -9,8 +9,8 @@
 
 namespace Aurora::Core {
 
-	Window::Window(const char* title, int width, int height)
-		: m_Title(title), m_Width(width), m_Height(height)
+	Window::Window(const char* title, int width, int height, WindowFlags windowFlags)
+		: m_Title(title), m_Width(width), m_Height(height), m_WindowFlags(windowFlags)
 	{
 	}
 
@@ -30,9 +30,11 @@ namespace Aurora::Core {
 		m_Window = glfwCreateWindow(m_Width, m_Height, m_Title, NULL, NULL);
 
 		glfwMakeContextCurrent(m_Window);
-		glfwSwapInterval(m_Vsync);
-		glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-		glfwSetCursorPos(m_Window, m_Width / 2, m_Height / 2);
+
+		if (m_WindowFlags & WindowFlags::VSYNC_ENABLE)
+		{
+			glfwSwapInterval(true);
+		}
 
 		// Load glad, should maybe be removed since this window class should ONLY handle the window, and not glad really.
 		gladLoadGLLoader((GLADloadproc)glfwGetProcAddress);
@@ -40,8 +42,15 @@ namespace Aurora::Core {
 		// Load ImGui
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
-		io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-		io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+
+		if (m_WindowFlags & WindowFlags::DOCKING_ENABLE)
+		{
+			io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+		}
+		if (m_WindowFlags & WindowFlags::VIEWPORT_ENABLE)
+		{
+			io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+		}
 
 		ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
 		ImGui_ImplOpenGL3_Init("#version 450");
@@ -97,11 +106,6 @@ namespace Aurora::Core {
 
 		glfwSwapBuffers(m_Window);
 		glfwPollEvents();
-	}
-
-	void Window::SetVsync(bool state)
-	{
-		m_Vsync = state;
 	}
 
 	void Window::SetCloseCallback(std::function<void()> callback)

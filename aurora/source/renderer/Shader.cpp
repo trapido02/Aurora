@@ -1,5 +1,7 @@
 #include "pch.h"
 
+#include <glad/glad.h>
+
 #include "Shader.h"
 
 namespace Aurora::Renderer {
@@ -7,10 +9,18 @@ namespace Aurora::Renderer {
 	Shader::Shader(const char* vertexShaderPath, const char* fragmentShaderPath)
 		: m_VertexShaderPath(vertexShaderPath), m_FragmentShaderPath(fragmentShaderPath)
 	{
+		INFO("Created shader with parameter");
+	}
+
+	Shader::Shader()
+		: m_VertexShaderPath(""), m_FragmentShaderPath("")
+	{
+		INFO("Created default shader");
 	}
 
 	Shader::~Shader()
 	{
+		INFO("Deleted shader");
 	}
 
 	void Shader::Create()
