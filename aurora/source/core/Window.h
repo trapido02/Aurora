@@ -17,6 +17,12 @@ namespace Aurora::Core {
 		F = GLFW_KEY_F
 	};
 
+	enum class MOUSEBUTTON
+	{
+		MOUSE_BUTTON_1 = GLFW_MOUSE_BUTTON_1,
+		MOUSE_BUTTON_2 = GLFW_MOUSE_BUTTON_2
+	};
+
 	struct WindowCallbacks
 	{
 		std::function<void()> closeCallback;
@@ -54,6 +60,8 @@ namespace Aurora::Core {
 		void SetResizeCallback(std::function<void(int width, int height)> lambda);
 
 		bool GetKeyDown(KEYCODE keycode, bool once = false);
+		bool GetMouseDown(MOUSEBUTTON mousebutton, bool once = false);
+		bool GetMouseUp(MOUSEBUTTON mousebutton);
 		void GetMousePosition(double& x, double& y);
 		void GetSize(int& width, int& height);
 
@@ -79,6 +87,7 @@ namespace Aurora::Core {
 		int m_FPS = 0;
 
 		bool m_KeyState[GLFW_KEY_LAST + 1] = { false }; // To track the state of each key
+		bool m_MouseState[GLFW_MOUSE_BUTTON_LAST + 1] = { false };  // To track the state of each mouse button
 	};
 
 }

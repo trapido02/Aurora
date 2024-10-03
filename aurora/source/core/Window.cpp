@@ -167,6 +167,50 @@ namespace Aurora::Core {
 		}
 	}
 
+	bool Window::GetMouseDown(MOUSEBUTTON mousebutton, bool once)
+	{
+		int key = glfwGetMouseButton(m_Window, (int)mousebutton);
+		if (once)
+		{
+			bool isPressed = (key == GLFW_PRESS);
+
+			if (isPressed && !m_MouseState[(int)mousebutton])
+			{
+				m_MouseState[(int)mousebutton] = true;
+				return true;
+			}
+			else if (!isPressed)
+			{
+				m_MouseState[(int)mousebutton] = false;
+			}
+
+			return false;
+		}
+		else
+		{
+			return key == GLFW_PRESS;
+		}
+	}
+
+	bool Window::GetMouseUp(MOUSEBUTTON mousebutton)
+	{
+		int key = glfwGetMouseButton(m_Window, (int)mousebutton);
+
+		bool isReleased = (key == GLFW_RELEASE);
+
+		if (isReleased && !m_MouseState[(int)mousebutton])
+		{
+			m_MouseState[(int)mousebutton] = false;
+			return true;
+		}
+		else if (!isReleased && (key == GLFW_PRESS))
+		{
+			m_MouseState[(int)mousebutton] = true;
+		}
+
+		return false;
+	}
+
 	void Window::GetMousePosition(double& x, double& y)
 	{
 		glfwGetCursorPos(m_Window, &x, &y);
