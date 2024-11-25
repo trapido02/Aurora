@@ -81,16 +81,13 @@ void TestScene::OnUpdate(Aurora::Core::Window* window, Aurora::Renderer::Shader*
 	//     Process input    //
 	//////////////////////////
 
-	if (window->GetKeyDown(Aurora::Core::KEYCODE::F, true))
+	if (window->GetMouseDown(Aurora::Core::MOUSEBUTTON::MOUSE_BUTTON_2, true))
 	{
-		if (window->IsMouseLocked())
-		{
-			window->UnlockMouseCursor();
-		}
-		else
-		{
-			window->LockMouseCursor();
-		}
+		window->LockMouseCursor();
+	}
+	if (window->GetMouseUp(Aurora::Core::MOUSEBUTTON::MOUSE_BUTTON_2))
+	{
+		window->UnlockMouseCursor();
 	}
 
 	glm::vec3 direction(0.0f);

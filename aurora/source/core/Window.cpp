@@ -42,15 +42,17 @@ namespace Aurora::Core {
 		// Load ImGui
 		ImGui::CreateContext();
 		ImGuiIO& io = ImGui::GetIO(); (void)io;
-
+		
 		if (m_WindowFlags & WindowFlags::DOCKING_ENABLE)
 		{
 			io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 		}
+		/*
 		if (m_WindowFlags & WindowFlags::VIEWPORT_ENABLE)
 		{
 			io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 		}
+		*/
 
 		ImGui_ImplGlfw_InitForOpenGL(m_Window, true);
 		ImGui_ImplOpenGL3_Init("#version 450");

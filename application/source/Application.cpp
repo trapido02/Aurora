@@ -120,7 +120,7 @@ void Application::Run()
 
 		if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::ESCAPE))
 		{
-			Application::Destroy();
+			m_ShouldDestroyApplication = true;
 		}
 		if (m_Window->GetKeyDown(Aurora::Core::KEYCODE::E, true))
 		{
@@ -132,6 +132,11 @@ void Application::Run()
 			{
 				m_WireframeMode = true;
 			}
+		}
+
+		if (m_ShouldDestroyApplication)
+		{
+			Application::Destroy();
 		}
 	}
 }
@@ -164,8 +169,12 @@ void Application::ImGuiRender()
 {
 	ImGuiID dockspace_id = ImGui::GetID("MyDockSpace");
 	ImGuiViewport* viewport = ImGui::GetMainViewport();
-	ImGui::DockSpaceOverViewport(dockspace_id, viewport);
 
+	ImGuiWindowFlags windowFlags = ImGuiDockNodeFlags_PassthruCentralNode;
+
+	ImGui::DockSpaceOverViewport(dockspace_id, viewport, windowFlags);
+
+	/*
 	{
 		ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
 		ImGui::Begin("Viewport");
@@ -186,6 +195,7 @@ void Application::ImGuiRender()
 		ImGui::End();
 		ImGui::PopStyleVar();
 	}
+	*/
 
 	{
 		if (ImGui::BeginMainMenuBar())
@@ -194,7 +204,7 @@ void Application::ImGuiRender()
 			{
 				if (ImGui::MenuItem("Exit"))
 				{
-					Application::Destroy();
+					m_ShouldDestroyApplication = true;
 				}
 				ImGui::EndMenu();
 			}

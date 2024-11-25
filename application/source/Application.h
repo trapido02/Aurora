@@ -22,8 +22,10 @@ public:
 private:
 	Application() = default;
 	~Application() = default;
-;
+
 	bool m_WireframeMode = false;
+
+	bool m_ShouldDestroyApplication = false;
 
 	Aurora::Scene::SceneManager m_SceneManager;
 
