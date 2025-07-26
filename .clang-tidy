@@ -1,0 +1,61 @@
+Checks: >
+  -*,
+  cppcoreguidelines-*,
+  clang-analyzer-*,
+  bugprone-*,
+  performance-*,
+  portability-*,
+  modernize-*,
+  readability-*,
+  misc-*,
+  -modernize-use-nodiscard,
+  -modernize-use-trailing-return-type,
+  -cppcoreguidelines-avoid-magic-numbers,
+  -readability-magic-numbers
+WarningsAsErrors: ''
+HeaderFilterRegex: '.*'
+FormatStyle: file
+CheckOptions:
+  # Define what type of casing to use
+  - key: readability-identifier-naming.VariableCase
+    value: camelBack
+  - key: readability-identifier-naming.ClassMemberCase
+    value: CamelCase
+  - key: readability-identifier-naming.ClassCase
+    value: CamelCase
+  - key: readability-identifier-naming.StructCase
+    value: CamelCase
+  - key: readability-identifier-naming.FunctionCase
+    value: CamelCase
+  - key: readability-identifier-naming.ParameterCase
+    value: camelBack
+  - key: readability-identifier-naming.EnumCase
+    value: CamelCase
+  - key: readability-identifier-naming.EnumConstantCase
+    value: CamelCase
+
+  # Auto / modernization
+  - key: modernize-use-auto.MinTypeNameLength
+    value: '5'
+  - key: modernize-loop-convert.MinConfidence
+    value: reasonable
+
+  # Const correctness
+  - key: cppcoreguidelines-explicit-virtual-functions.StrictMode
+    value: true
+
+  # Performance
+  - key: performance-unnecessary-value-param.AllowedTypes
+    value: ''
+
+  # Nullptr checks
+  - key: bugprone-argument-comment.StrictMode
+    value: true
+
+  # Thread safety
+  - key: clang-analyzer-thread-safety.Strict
+    value: true
+
+  # Disable the warning that prevented the use of a default destructor without defining other special member functions
+  - key: cppcoreguidelines-special-member-functions.AllowSoleDefaultDtor
+    value: 'true'
