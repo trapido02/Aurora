@@ -1,12 +1,13 @@
 #pragma once
 
 #include <memory>
+#include "aurora_export.h"
 
 namespace Aurora::Core {
 
     class ApplicationBaseImpl;
 
-    class ApplicationBase
+    class AURORA_API ApplicationBase
     {
     public:
         ApplicationBase();

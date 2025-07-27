@@ -1,6 +1,9 @@
 cmake_minimum_required(VERSION 3.10)
 project(Aurora LANGUAGES CXX)
 
+# Make sure to build shared libraries
+option(BUILD_SHARED_LIBS "Build shared libraries (DLL)" ON)
+
 # C++ Standard settings
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -20,20 +23,31 @@ file(GLOB_RECURSE SRC_FILES
 # Build the shared library
 add_library(Aurora SHARED ${SRC_FILES})
 
+# Generate export header
+include(GenerateExportHeader)
+generate_export_header(Aurora EXPORT_MACRO_NAME AURORA_API)
+target_include_directories(Aurora PUBLIC "${CMAKE_CURRENT_BINARY_DIR}")
+target_compile_definitions(Aurora PRIVATE AURORA_EXPORTS)
+
+target_include_directories(Aurora
+        PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_BINARY_DIR}>
+)
+
 # Setup the include directories
 target_include_directories(Aurora PUBLIC include)
 target_include_directories(Aurora PRIVATE .)
 
 # Fetch GLFW
 set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_TESTS    OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-set(GLFW_INSTALL        OFF CACHE BOOL "" FORCE)
+set(GLFW_INSTALL OFF CACHE BOOL "" FORCE)
 include(FetchContent)
 FetchContent_Declare(
         glfw
         GIT_REPOSITORY https://github.com/glfw/glfw.git
-        GIT_TAG        3.3.8
+        GIT_TAG 3.3.8
 )
 FetchContent_MakeAvailable(glfw)
 

@@ -1,9 +1,11 @@
 #pragma once
+
 #include <string>
+#include "aurora_export.h"
 
 namespace Aurora::Core {
 
-    class Window
+    class AURORA_API Window
     {
     public:
         Window() = delete;
