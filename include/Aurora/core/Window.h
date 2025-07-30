@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include "Aurora/event/Event.h"
 #include "aurora_export.h"
 
 namespace Aurora::Core {
@@ -19,6 +20,8 @@ namespace Aurora::Core {
         static void SetTitle(const std::string& title);
         static void SetSize(int width, int height);
         static void SetVsync(bool enable);
+
+        static Event::EventDispatcher& GetEventDispatcher();
     };
 
 } // namespace Aurora::Core

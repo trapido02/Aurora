@@ -19,4 +19,9 @@ namespace Aurora::Core {
         WindowImpl::SetVsync(enable);
     }
 
+    Event::EventDispatcher& Window::GetEventDispatcher()
+    {
+        return WindowImpl::GetInstance().GetEventDispatcher();
+    }
+
 } // namespace Aurora::Core
