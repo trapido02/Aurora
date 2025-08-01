@@ -58,3 +58,9 @@ target_link_libraries(Aurora PUBLIC OpenGL::GL)
 
 # Link GLFW
 target_link_libraries(Aurora PRIVATE glfw)
+
+option(RUN_UNIT_TESTS "Build and run Catch2 tests" ON)
+if (RUN_UNIT_TESTS)
+    enable_testing()
+    add_subdirectory(tests)
+endif ()
