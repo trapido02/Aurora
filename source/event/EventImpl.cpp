@@ -1,5 +1,5 @@
 #include "EventImpl.h"
-#include "include/Aurora/event/Event.h"
+#include "Aurora/event/Event.h"
 
 #include <iostream>
 

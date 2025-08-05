@@ -1,6 +1,5 @@
-#include "ApplicationBase.h"
-
-#include "source/core/ApplicationBaseImpl.h"
+#include "Aurora/core/ApplicationBase.h"
+#include "../source/core/ApplicationBaseImpl.h"
 
 namespace Aurora::Core {
 

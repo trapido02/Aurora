@@ -1,6 +1,6 @@
-#include "Window.h"
+#include "Aurora/core/Window.h"
 
-#include "source/core/WindowImpl.h"
+#include "core/WindowImpl.h"
 
 namespace Aurora::Core {
 

@@ -1,3 +1,6 @@
+set(CMAKE_CXX_VISIBILITY_PRESET default)
+set(CMAKE_VISIBILITY_INLINES_HIDDEN FALSE)
+
 enable_testing()
 
 # Fetch Catch2

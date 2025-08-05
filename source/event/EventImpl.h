@@ -3,7 +3,7 @@
 #include <map>
 #include <string>
 #include <vector>
-#include "include/Aurora/event/Event.h"
+#include "Aurora/event/Event.h"
 
 namespace Aurora::Event {
 

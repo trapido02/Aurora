@@ -1,7 +1,6 @@
 #pragma once
 
 #include <memory>
-#include "aurora_export.h"
 
 namespace Aurora::Core {
 

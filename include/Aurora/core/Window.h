@@ -2,7 +2,6 @@
 
 #include <string>
 #include "Aurora/event/Event.h"
-#include "aurora_export.h"
 
 namespace Aurora::Core {
 
