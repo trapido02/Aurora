@@ -1,8 +1,6 @@
 #include "WindowImpl.h"
-
-#include <iostream>
-
 #include "Aurora/event/WindowResize.h"
+#include "tracy/Tracy.hpp"
 
 namespace Aurora::Core {
 

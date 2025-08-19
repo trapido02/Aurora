@@ -2,6 +2,8 @@
 #include "Aurora/core/ApplicationBase.h"
 #include "WindowImpl.h"
 
+#include "tracy/Tracy.hpp"
+
 namespace Aurora::Core {
 
     ApplicationBaseImpl::ApplicationBaseImpl(ApplicationBase& selfRef) : self(selfRef)
@@ -29,6 +31,8 @@ namespace Aurora::Core {
             }
 
             window.Update();
+
+            FrameMark;
         }
 
         self.Shutdown();
