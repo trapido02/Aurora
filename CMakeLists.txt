@@ -73,6 +73,9 @@ target_compile_definitions(Aurora
 # If building shared, define AURORA_EXPORTS so the same macro expands right during compilation
 target_compile_definitions(Aurora PRIVATE $<$<BOOL:${BUILD_SHARED_LIBS}>:AURORA_EXPORTS>)
 
+# Setup precompiled headers
+target_precompile_headers(Aurora PRIVATE source/pch.h)
+
 # Require OpenGL
 set(OpenGL_GL_PREFERENCE LEGACY)
 find_package(OpenGL REQUIRED)

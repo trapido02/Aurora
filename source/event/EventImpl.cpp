@@ -1,9 +1,7 @@
+#include "pch.h"
 #include "EventImpl.h"
 
-#include <iostream>
-
 #include "Aurora/event/Event.h"
-#include "tracy/Tracy.hpp"
 
 namespace Aurora::Event {
 

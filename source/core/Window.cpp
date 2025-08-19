@@ -1,5 +1,4 @@
 #include "Aurora/core/Window.h"
-
 #include "core/WindowImpl.h"
 
 namespace Aurora::Core {

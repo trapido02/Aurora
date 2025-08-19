@@ -1,8 +1,8 @@
+#include "pch.h"
+
 #include "ApplicationBaseImpl.h"
 #include "Aurora/core/ApplicationBase.h"
 #include "WindowImpl.h"
-
-#include "tracy/Tracy.hpp"
 
 namespace Aurora::Core {
 
